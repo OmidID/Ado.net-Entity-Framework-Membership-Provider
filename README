@@ -1,0 +1,737 @@
+****************************************
+OmidID.Web.Security.EFMembership
+http://efmembership.codeplex.com/
+Developed by Omid Mafakher - (OmidID)
+****************************************
+
+1.License
+
+License: GNU General Public License version 2 (GPLv2)
+Copyright (C) 1989, 1991 Free Software Foundation, Inc.
+59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
+
+Everyone is permitted to copy and distribute verbatim copies
+of this license document, but changing it is not allowed.
+
+Please read the link below completly
+http://efmembership.codeplex.com/license
+
+NO WARRANTY:
+11. BECAUSE THE PROGRAM IS LICENSED FREE OF CHARGE, THERE IS NO WARRANTY FOR THE PROGRAM, TO THE EXTENT PERMITTED BY APPLICABLE LAW. EXCEPT WHEN OTHERWISE STATED IN WRITING THE COPYRIGHT HOLDERS AND/OR OTHER PARTIES PROVIDE THE PROGRAM "AS IS" WITHOUT WARRANTY OF ANY KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE. THE ENTIRE RISK AS TO THE QUALITY AND PERFORMANCE OF THE PROGRAM IS WITH YOU. SHOULD THE PROGRAM PROVE DEFECTIVE, YOU ASSUME THE COST OF ALL NECESSARY SERVICING, REPAIR OR CORRECTION.
+12. IN NO EVENT UNLESS REQUIRED BY APPLICABLE LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER, OR ANY OTHER PARTY WHO MAY MODIFY AND/OR REDISTRIBUTE THE PROGRAM AS PERMITTED ABOVE, BE LIABLE TO YOU FOR DAMAGES, INCLUDING ANY GENERAL, SPECIAL, INCIDENTAL OR CONSEQUENTIAL DAMAGES ARISING OUT OF THE USE OR INABILITY TO USE THE PROGRAM (INCLUDING BUT NOT LIMITED TO LOSS OF DATA OR DATA BEING RENDERED INACCURATE OR LOSSES SUSTAINED BY YOU OR THIRD PARTIES OR A FAILURE OF THE PROGRAM TO OPERATE WITH ANY OTHER PROGRAMS), EVEN IF SUCH HOLDER OR OTHER PARTY HAS BEEN ADVISED OF THE POSSIBILITY OF SUCH DAMAGES. 
+
+2.Download:
+Easy way:
+	You can download it from NUGET (https://nuget.org/packages/EFMembership)
+	PM> Install-Package EFMembership
+
+Download from codeplex:
+	Click on download link in this url: http://efmembership.codeplex.com/ and then accept the license.
+
+Advanced user:
+	Download the source code from git server: git://github.com/OmidID/Ado.net-Entity-Framework-Membership-Provider.git
+	If you are not advanced user please leave it and use upper way to download EFMembership.
+
+
+3.Add it to your project:
+	3.1. In your web or windows project, right click in your Refrences and then click "Add Refrence..." button.
+	3.2. Now open or create web.config (for windows application you must use app.config)
+	3.3. Find membership and roleManager sections. if you have it.
+	3.4. Delete the both and replace that with this code:
+		
+		
+		 **********************NOTE***********************
+		 * This is DEFAULT, SAMPLE, For more options and *
+		 * More Database structure read section      3.7 *
+		 *************************************************
+
+
+			<membership defaultProvider="OmidIDMembershipProvider">
+				<providers>
+				<clear/>
+				<add name="OmidIDMembershipProvider" 
+						type="OmidID.Web.Security.EFMembershipProvider`2[[OmidID.Web.Security.Default.DefaultUser, OmidID.Web.Security.EFMembershipProvider],
+																		 [System.Int64]], OmidID.Web.Security.EFMembershipProvider" 
+						connectionStringName="ApplicationServices" tablePrefix="ef_" tableSchema="dbo"
+						enablePasswordRetrieval="false" enablePasswordReset="true" requiresQuestionAndAnswer="false" requiresUniqueEmail="false"
+						maxInvalidPasswordAttempts="5" minRequiredPasswordLength="6" minRequiredNonalphanumericCharacters="0" passwordAttemptWindow="10"
+						applicationName="/" />
+				</providers>
+			</membership>
+
+			<roleManager enabled="true" defaultProvider="OmidIDRoleProvider">
+				<providers>
+				<clear/>
+					<add name="OmidIDRoleProvider"
+					type="OmidID.Web.Security.EFRoleProvider`3[[OmidID.Web.Security.Default.DefaultRole, OmidID.Web.Security.EFMembershipProvider],
+															   [OmidID.Web.Security.Default.DefaultUserRole, OmidID.Web.Security.EFMembershipProvider],
+															   [System.Int32]], OmidID.Web.Security.EFMembershipProvider"
+					connectionStringName="ApplicationServices" tablePrefix="ef_" tableSchema="dbo"
+					applicationName="/" />
+				</providers>
+			</roleManager>
+	3.5. Now you need to install Database for the first time.
+			OmidID.Web.Security.Installer can help you to create a new database.
+
+			var installer = new OmidID.Web.Security.Installer();
+			
+			installer.MembershipProvider = System.Web.Security.Membership.Provider;
+			installer.RoleProvider = System.Web.Security.Roles.Provider;
+
+			//Install database:
+			var installed = installer.CreateIfNotExist();
+
+			You can add this code to Application_Start in Global.asax.cs
+
+	3.6. Now is ready for use. Enjoy
+
+
+
+	********************Advanced USERS************************
+
+	3.7. EFMembership is fully customizable. this project allow you to have CUSTOM DATABASE.
+		 Also there are some default structure samples:
+
+		 1. Asp.Net Membership Provider Default Database (aspnet_regsql.exe)
+				namespace OmidID.Web.Security.Default.AspNet;
+				web.config ex:
+					<membership defaultProvider="OmidIDMembershipProvider">
+						<providers>
+						<clear/>
+						<add name="OmidIDMembershipProvider" 
+								type="OmidID.Web.Security.EFMembershipProvider`2[[OmidID.Web.Security.Default.AspNet.AspUser, OmidID.Web.Security.EFMembershipProvider],
+																				 [System.Guid]], OmidID.Web.Security.EFMembershipProvider" 
+								connectionStringName="ApplicationServices" tablePrefix="aspnet_" tableSchema="dbo"
+								enablePasswordRetrieval="false" enablePasswordReset="true" requiresQuestionAndAnswer="false" requiresUniqueEmail="false"
+								maxInvalidPasswordAttempts="5" minRequiredPasswordLength="6" minRequiredNonalphanumericCharacters="0" passwordAttemptWindow="10"
+								applicationName="/" />
+						</providers>
+					</membership>
+
+					<roleManager enabled="true" defaultProvider="OmidIDRoleProvider">
+						<providers>
+						<clear/>
+							<add name="OmidIDRoleProvider"
+							type="OmidID.Web.Security.EFRoleProvider`3[[OmidID.Web.Security.Default.AspNet.AspRole, OmidID.Web.Security.EFMembershipProvider],
+																	   [OmidID.Web.Security.Default.AspNet.AspUserInRole, OmidID.Web.Security.EFMembershipProvider],
+																	   [System.Guid]], OmidID.Web.Security.EFMembershipProvider"
+							connectionStringName="ApplicationServices" tablePrefix="aspnet_" tableSchema="dbo"
+							applicationName="/" />
+						</providers>
+					</roleManager>
+
+		 2. Old EFMembership Structure (EFMembership 0.9.1)
+				namespace OmidID.Web.Security.Default.OldEf;
+				web.config ex:
+					<membership defaultProvider="OmidIDMembershipProvider">
+						<providers>
+						<clear/>
+						<add name="OmidIDMembershipProvider" 
+								type="OmidID.Web.Security.EFMembershipProvider`2[[OmidID.Web.Security.Default.OldEf.EfUser, OmidID.Web.Security.EFMembershipProvider],
+																				 [System.Int32]], OmidID.Web.Security.EFMembershipProvider" 
+								connectionStringName="ApplicationServices" tablePrefix="" tableSchema="dbo"
+								enablePasswordRetrieval="false" enablePasswordReset="true" requiresQuestionAndAnswer="false" requiresUniqueEmail="false"
+								maxInvalidPasswordAttempts="5" minRequiredPasswordLength="6" minRequiredNonalphanumericCharacters="0" passwordAttemptWindow="10"
+								applicationName="/" />
+						</providers>
+					</membership>
+
+					<roleManager enabled="true" defaultProvider="OmidIDRoleProvider">
+						<providers>
+						<clear/>
+							<add name="OmidIDRoleProvider"
+							type="OmidID.Web.Security.EFRoleProvider`3[[OmidID.Web.Security.Default.OldEf.EfRole, OmidID.Web.Security.EFMembershipProvider],
+																	   [OmidID.Web.Security.Default.OldEf.EfUserInRole, OmidID.Web.Security.EFMembershipProvider],
+																	   [System.Int32]], OmidID.Web.Security.EFMembershipProvider"
+							connectionStringName="ApplicationServices" tablePrefix="" tableSchema="dbo"
+							applicationName="/" />
+						</providers>
+					</roleManager>
+
+
+		 **. In this library you can change the default "aspnet_" table prefix to your custom prefix or remove it,
+			 Also is availabe for any custom user and role classes to change prefix and schema.
+
+		
+	
+4. Customize EFMembership 
+    ** If you have a currently Project Or If you want to use your database structure **
+
+	4.1. How to write a simple class for EFMembership:
+			** Membership provider have 2 generic arguments:
+				1. User class type
+				2. UserID data type
+
+			1. First add those using in your class:
+				using System;
+				using System.Collections.Generic;
+				using System.Linq;
+				using System.Text;
+				using System.ComponentModel.DataAnnotations;
+				using OmidID.Web.Security.Mapper;
+							
+			2. Then write a class like this:
+				[Table("Users")]
+				public class User { 
+					
+				}
+
+			3. Now you need to add 5 required properties
+				(UserID, Username, Password, PasswordFormat, PasswordSalt) and the others are optional
+				
+					namespace MyApp {
+						[Table("Users")]
+						public class User { 
+					
+							[Key]
+							public long UserID { get; set; }
+
+							[Required]
+							[MaxLength(300)]
+							public string Username { get; set; }
+					
+							[Required]
+							[MaxLength(100)]
+							public string Password { get; set; }
+
+							[Required]
+							public int PasswordFormat { get; set; }
+
+							[MaxLength(100)]
+							public string PasswordSalt { get; set; }
+					
+						}
+					}
+
+				Open and replace membership section in web.config with the code below:
+
+					<membership defaultProvider="MyAppMembershipProvider">
+						<providers>
+						<clear/>
+						<add name="MyAppMembershipProvider" 
+								type="OmidID.Web.Security.EFMembershipProvider`2[[MyApp.User, MyApp],
+																				 [System.Int64]], OmidID.Web.Security.EFMembershipProvider" 
+								connectionStringName="ApplicationServices" tablePrefix="" tableSchema="dbo"
+								enablePasswordRetrieval="false" enablePasswordReset="true" requiresQuestionAndAnswer="false" requiresUniqueEmail="false"
+								maxInvalidPasswordAttempts="5" minRequiredPasswordLength="6" minRequiredNonalphanumericCharacters="0" passwordAttemptWindow="10"
+								applicationName="/" />
+						</providers>
+					</membership>
+
+				Test your application and database. Create a database in Installer and test your application:
+
+					var installer = new OmidID.Web.Security.Installer();
+					installer.MembershipProvider = System.Web.Security.Membership.Provider;
+					var installed = installer.CreateIfNotExist();
+
+				test ex:
+					var ms = System.Web.Security.MembershipCreateStatus.Success;
+					var member = membership.CreateUser("Omid", "12345", null, null, null, true, null, out ms);
+
+
+			4. If you have a problem with property name you can use UserColumnAttribute for set Column customize name, ex:
+				
+					[Table("Users")]
+					public class User { 					
+
+						[Key]
+						[UserColumn(UserColumnType.UserID)]
+						public long ProviderKey { get; set; }
+										
+					}
+
+			5. Separated Class, sometime you need more than one table for your users or roles in your database. is not difficult!
+					!!!!****((Just Add     [JoinIt]    Attribute     On your property and that set.))****!!!!
+					Example: Default SQL Asp.Net Membership provider: aspnet_Users, aspnet_Membership
+					
+
+					**************************************** NOTE *****************************************
+					* 1. Is WORKING Hierarchically														  *
+					* 2. JoinIt Automaticly add Includes to DataContext									  *
+					* 3. Create new instance for all Join property when creating new instance of parent   *
+					* 4. Automaticly find and bind property in any level of classes						  *
+					***************************************************************************************
+
+
+					Example:
+
+
+					[Table("Users")]
+					public class AspUser { 					
+
+						[JoinIt]
+						[Required]
+						public AspMembership Membership { get; set; }
+						
+						[Key]
+						[UserColumn(UserColumnType.UserID)]
+						public long ProviderKey { get; set; }
+
+						[Required]
+						[MaxLength(256)]
+						[UserColumn(UserColumnType.Username)]
+						public string UserName { get; set; }
+
+						[Required]
+						[MaxLength(256)]
+						public string LoweredUserName { get; set; }
+
+					}
+					
+					[Table("Membership")]
+					public class AspMembership {
+
+						public AspUser User { get; set; }
+						
+						[Key]
+						[Required]
+						[ForeignKey("User")]
+						public Guid UserID {
+							get { return User == null ? _UserId : User.UserID; }
+							set { if (User == null) _UserId = value; }
+						}
+						Guid _UserId;
+
+						[Required]
+						[MaxLength(128)]
+						[UserColumn(UserColumnType.Password)]
+						public string Password { get; set; }
+
+						[Required]
+						[UserColumn(UserColumnType.PasswordFormat)]
+						public int PasswordFormat { get; set; }
+
+						[Required]
+						[MaxLength(128)]
+						[UserColumn(UserColumnType.PasswordSalt)]
+						public string PasswordSalt { get; set; }
+
+					}
+
+	4.2. How to Include Application:
+			1. You need a class inherited of OmidID.Web.Security.Models.Application
+
+			    [Table("Applications")]
+				public class DefaultApplication : Models.Application {
+        
+					[Key]
+					public int ApplicationID { get; set; }
+
+					[Column("ApplicationName")]
+					[MaxLength(256)]
+					public override string Name { get; set; }
+
+				}
+			
+			2. And then you must foreign key like this:
+
+								
+				[Table("Users")]
+				public class DefaultUser { 					
+
+					[Key]
+					public long ProviderKey { get; set; }
+						
+					[ForeignKey("ApplicationID")]
+					[UserColumn(UserColumnType.Application)]
+					public DefaultApplication Application { get; set; }
+
+					[Required]
+					public int ApplicationID { get; set; }
+				
+				}
+
+
+	4.3. Role And UserRole:
+			** Role provider have 3 Generic argument
+				1. Role class
+				2. UserRole class (join of user and role)
+				3. type of RoleID
+
+			1. Role provider need Membership provider to work, that why you have to set defatul membership provider to 
+			   MembershipProvider that contains current database, or set membershipProvider attribute in web.config in
+			   Role Provider section. by the way you must be careful, UserRole.UserID type and Membership
+			   Provider UserID type to be same.
+
+			2. Create Role Class:
+				
+				[Table("Roles")]
+				public class DefaultRole {
+
+					[Key]
+					[RoleColumn(RoleColumnType.RoleID)]
+					public int RoleID { get; set; }
+
+					[Required]
+					[RoleColumn(RoleColumnType.RoleName)]
+					public string RoleName { get; set; }
+
+					[Required]
+					[RoleColumn(RoleColumnType.CreateOn)]
+					public DateTime CreateOn { get; set; }
+
+					[ForeignKey("ApplicationID")]
+					[RoleColumn(RoleColumnType.Application)]
+					public DefaultApplication Application { get; set; }
+
+					[Required]
+					public int ApplicationID { get; set; }
+
+				}
+
+			3. And then join of User and Role (UserRole):
+				
+				[Table("UserRoles")]
+				public class DefaultUserRole {
+
+					[Key]
+					[Column(Order = 1)]
+					[UserRoleColumn(UserRoleColumnType.RoleID)]
+					public int RoleID { get; set; }
+					
+					[ForeignKey("RoleID")]
+					public DefaultRole Role { get; set; }
+
+
+
+					
+					[Key]
+					[Column(Order = 2)]
+					[UserRoleColumn(UserRoleColumnType.UserID)]
+					public long UserID { get; set; }
+					
+					[ForeignKey("UserID")]
+					public DefaultUser User { get; set; }
+
+				}
+
+			4. Open web.config and find roleManager section and also add your custom Membership provider (Requierd)
+			
+					<roleManager enabled="true" defaultProvider="MyRoleProvider">
+					  <providers>
+						<clear/>
+						  <add name="OmidIDRoleProvider"
+							type="OmidID.Web.Security.EFRoleProvider`3[[MyApp.DefaultRole, MyApp],
+																	   [MyApp.DefaultUserRole, MyApp],
+																	   [System.Int32]], OmidID.Web.Security.EFMembershipProvider"
+							connectionStringName="ApplicationServices" tablePrefix="efmembership_"
+							applicationName="/" />
+					  </providers>
+					</roleManager>
+
+					<membership defaultProvider="OmidIDMembershipProvider">
+					  <providers>
+						<clear/>
+						<add name="OmidIDMembershipProvider" 
+							 type="OmidID.Web.Security.EFMembershipProvider`2[[MyApp.DefaultUser, MyApp],
+																			  [System.Int64]], OmidID.Web.Security.EFMembershipProvider" 
+							 connectionStringName="ApplicationServices" tablePrefix="efmembership_"
+							 enablePasswordRetrieval="false" enablePasswordReset="true" requiresQuestionAndAnswer="false" requiresUniqueEmail="false"
+							 maxInvalidPasswordAttempts="5" minRequiredPasswordLength="6" minRequiredNonalphanumericCharacters="0" passwordAttemptWindow="10"
+							 applicationName="/" />
+					  </providers>
+					</membership>
+
+
+	4.4. Custom Mapper
+			**    Auto mapper already include (no need to include as usually)
+			***   You can use this feuture for use better performance (If is make it better !!! Direct calling member is usually is better)
+			****  OR Use custom mapper when you have custom binding with database 
+			***** Return new type of MembershipUser (ex: public class MyNewMembership : MembershipUser {})
+
+			OmidID.Web.Security.Mapper.IMapper
+			|
+			|__IProviderMapper
+			|   |
+			|   |__IUserMapper
+			|
+			|
+			|__IRoleMapper
+			|
+			|__IUserRoleMapper
+
+
+
+			1. User Mapper Sample:
+				
+				    public class DefaultUserMapper : IUserMapper<DefaultUser> {
+						public System.Web.Security.MembershipUser To(string ProviderName, DefaultUser From) {
+							throw new NotImplementedException();
+						}
+						public DefaultUser To(System.Web.Security.MembershipUser From) {
+							throw new NotImplementedException();
+						}
+						public DefaultUser To(DefaultUser To, System.Web.Security.MembershipUser From) {
+							throw new NotImplementedException();
+						}
+
+						public T Get<T>(DefaultUser Entity, UserColumnType ColumnType) {
+							throw new NotImplementedException();
+						}
+						public object Get(DefaultUser Entity, UserColumnType ColumnType) {
+							throw new NotImplementedException();
+						}
+
+						public bool Set<TValue>(DefaultUser Entity, UserColumnType ColumnType, TValue Value) {
+							throw new NotImplementedException();
+						}
+
+
+						public object UserID(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> UserID(DefaultUser user, object value) {
+							throw new NotImplementedException();
+						}
+
+						public string Username(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> Username(DefaultUser user, string value) {
+							throw new NotImplementedException();
+						}
+
+						public string Email(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> Email(DefaultUser user, string value) {
+							throw new NotImplementedException();
+						}
+
+						public bool IsAnonymous(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> IsAnonymous(DefaultUser user, bool value) {
+							throw new NotImplementedException();
+						}
+
+						public string Password(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> Password(DefaultUser user, string value) {
+							throw new NotImplementedException();
+						}
+
+						public MembershipPasswordFormat PasswordFormat(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> PasswordFormat(DefaultUser user, MembershipPasswordFormat value) {
+							throw new NotImplementedException();
+						}
+
+						public string PasswordSalt(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> PasswordSalt(DefaultUser user, string value) {
+							throw new NotImplementedException();
+						}
+
+						public string PasswordQuestion(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> PasswordQuestion(DefaultUser user, string value) {
+							throw new NotImplementedException();
+						}
+
+						public string PasswordAnswer(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> PasswordAnswer(DefaultUser user, string value) {
+							throw new NotImplementedException();
+						}
+
+						public bool IsApproved(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> IsApproved(DefaultUser user, bool value) {
+							throw new NotImplementedException();
+						}
+
+						public DateTime CreateOn(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> CreateOn(DefaultUser user, DateTime value) {
+							throw new NotImplementedException();
+						}
+
+						public DateTime LastLoginDate(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> LastLoginDate(DefaultUser user, DateTime value) {
+							throw new NotImplementedException();
+						}
+
+						public DateTime LastActivityDate(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> LastActivityDate(DefaultUser user, DateTime value) {
+							throw new NotImplementedException();
+						}
+
+						public DateTime LastPasswordChangedDate(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> LastPasswordChangedDate(DefaultUser user, DateTime value) {
+							throw new NotImplementedException();
+						}
+
+						public DateTime LastLockoutDate(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> LastLockoutDate(DefaultUser user, DateTime value) {
+							throw new NotImplementedException();
+						}
+
+						public int FailedPasswordAttemptCount(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> FailedPasswordAttemptCount(DefaultUser user, int value) {
+							throw new NotImplementedException();
+						}
+
+						public DateTime FailedPasswordAttemptWindowStart(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> FailedPasswordAttemptWindowStart(DefaultUser user, DateTime value) {
+							throw new NotImplementedException();
+						}
+
+						public int FailedPasswordAnswerAttemptCount(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> FailedPasswordAnswerAttemptCount(DefaultUser user, int value) {
+							throw new NotImplementedException();
+						}
+
+						public DateTime FailedPasswordAnswerAttemptWindowStart(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> FailedPasswordAnswerAttemptWindowStart(DefaultUser user, DateTime value) {
+							throw new NotImplementedException();
+						}
+
+						public string Comment(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> Comment(DefaultUser user, string value) {
+							throw new NotImplementedException();
+						}
+
+						public bool IsLockedOut(DefaultUser user) {
+							throw new NotImplementedException();
+						}
+						public IUserMapper<DefaultUser> IsLockedOut(DefaultUser user, bool value) {
+							throw new NotImplementedException();
+						}
+
+					}
+
+				1. (To) Method(s) are converting MembershipUser to user class and Reverse
+				2. Get<T> Method(s) get value of member that switch. example:
+					public T Get<T>(DefaultUser Entity, UserColumnType ColumnType) {
+						switch(ColumnType) {
+							case UserColumnType.UserID:
+								return (T)Entity.UserID;
+							case UserColumnType.Username:
+								return (T)Entity.Username;
+							case UserColumnType.Password:
+								return (T)Entity.Password;
+							.....
+						}
+					}
+
+					//You can use generic method and Generic it to object
+					public object Get(DefaultUser Entity, UserColumnType ColumnType) { return Get<object>(Entity, ColumnType); }
+
+				3. Set<TValue> set value of member in entity properties. example:
+					public bool Set<TValue>(DefaultUser Entity, UserColumnType ColumnType, TValue Value) {
+						switch(ColumnType) {
+							case UserColumnType.UserID:
+								Entity.UserID = (long)Value;
+								break;
+							case UserColumnType.Username:
+								Entity.Username = (string)Value;
+								break;
+							case UserColumnType.Password:
+								Entity.Password = (string)Value;
+								break;
+							.....
+						}
+					}
+
+				4. Other Method(s) are setter(s) and getter(s). for example:
+						//Easy way:::
+						public object UserID(DefaultUser user) { return Get(user, UserColumnType.UserID); }
+						public IUserMapper<DefaultUser> UserID(DefaultUser user, object value) { Set(user, UserColumnType.UserID, value); return this; }
+
+						//Normal way:::
+						public string Username(DefaultUser user) { return user.Username; }
+						public IUserMapper<DefaultUser> Username(DefaultUser user, string value) { user.Username = value; return this; }
+
+						public string Email(DefaultUser user) { return user.Email; }
+						public IUserMapper<DefaultUser> Email(DefaultUser user, string value) { user.Email = value; return this; }
+
+					Are very easy to use:
+						Mapper.Username(u, "Omid").Email(u, "OK@OK.OK")
+							  .Password(u, "123456").PasswordFormat(u, 0);
+
+				5. Now you need to Map your user class to DefaultUserMapper
+						
+						[Table("Users")]
+						[EFDataMapper(typeof(DefaultUserMapper))]
+						public class DefaultUser {
+							...
+						}
+
+
+			2. Role Mapper Sample:
+					public class DefaultRoleMapper : IRoleMapper {
+						
+						//object RoleID(TRole role);
+						//IRoleMapper<TRole> RoleID(TRole role, object value);
+						//
+						//string RoleName(TRole role);
+						//IRoleMapper<TRole> RoleName(TRole role, string value);
+						//
+						//DateTime CreateOn(TRole role);
+						//IRoleMapper<TRole> CreateOn(TRole role, DateTime value);
+
+					}
+
+					1. In Role and UserRole Mapper you don't have any To(s) Method(s)
+					   Same like step 2,3,4 in DefaultUserMapper fill the method(s) and is over.
+
+					2. Route Map from Auto to your custom Mapper like this:
+						
+						[Table("Roles")]
+						[EFDataMapper(typeof(DefaultRoleMapper))]
+						public class DefaultRole {
+							...
+						}
+
+						
+
+			3. UserRole Mapper Sample:
+					public class DefaultUserRoleMapper : IUserRoleMapper {
+						
+						//object RoleID(TUserRole role);
+						//IUserRoleMapper<TUserRole> RoleID(TUserRole role, object value);
+						//
+						//object UserID(TUserRole role);
+						//IUserRoleMapper<TUserRole> UserID(TUserRole role, object value);
+
+					}
+
+					1. Other steps exactly same like Role and User mapper
+
+
+	4.5. No Prefix
+			1. (NoPrefixAttribute) [NoPrefix]
+			2. This attribute Force provider to leave new table name with prefix or changes.
+			3. Example:
+
+				[NoPrefix]
+			    [Table("aspnet_Users")]
+				public class DefaultUser {
+					...
+				}

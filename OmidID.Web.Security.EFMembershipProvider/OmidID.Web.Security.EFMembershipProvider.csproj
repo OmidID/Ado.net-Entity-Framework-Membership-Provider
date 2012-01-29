@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{7E6B0076-4E80-4D18-B5F2-2C293C36A63E}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>OmidID.Web.Security</RootNamespace>
+    <AssemblyName>OmidID.Web.Security.EFMembershipProvider</AssemblyName>
+    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.4.2.0.0\lib\net40\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.ApplicationServices" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DataContext\DefaultRoleContext.cs" />
+    <Compile Include="DataContext\InternalRoleContext.cs" />
+    <Compile Include="DataContext\InternalUserContext.cs" />
+    <Compile Include="DataContext\IRoleContext.cs" />
+    <Compile Include="DataContext\IUserContext.cs" />
+    <Compile Include="DataContext\DefaultUserContext.cs" />
+    <Compile Include="Default\AspNet\AspApplication.cs" />
+    <Compile Include="Default\AspNet\AspMembership.cs" />
+    <Compile Include="Default\AspNet\AspRole.cs" />
+    <Compile Include="Default\AspNet\AspUser.cs" />
+    <Compile Include="Default\AspNet\AspUserInRole.cs" />
+    <Compile Include="Default\DefaultApplication.cs" />
+    <Compile Include="Default\DefaultRole.cs" />
+    <Compile Include="Default\DefaultUser.cs" />
+    <Compile Include="Default\DefaultUserRole.cs" />
+    <Compile Include="Default\OldEf\EfApplication.cs" />
+    <Compile Include="Default\OldEf\EfRole.cs" />
+    <Compile Include="Default\OldEf\EfUser.cs" />
+    <Compile Include="Default\OldEf\EfUserInRole.cs" />
+    <Compile Include="Default\OldEf\EfUserMapper.cs" />
+    <Compile Include="Default\OldEf\MembershipUser.cs" />
+    <Compile Include="EFMembershipProvider.cs" />
+    <Compile Include="EFRoleProvider.cs" />
+    <Compile Include="Installer.cs" />
+    <Compile Include="InternalInstallDataContext.cs" />
+    <Compile Include="Mapper\IProviderMapper.cs" />
+    <Compile Include="Mapper\RoleAutoMapper.cs" />
+    <Compile Include="Mapper\UserRoleAutoMapper.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\JoinItAttribute.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\NoPrefixAttribute.cs" />
+    <Compile Include="Mapper\UserAutoMapper.cs" />
+    <Compile Include="Mapper\ClassHelper.cs" />
+    <Compile Include="Mapper\ColumnBaseAttribute.cs" />
+    <Compile Include="Mapper\IMapper.cs" />
+    <Compile Include="Mapper\IRoleMapper.cs" />
+    <Compile Include="Mapper\IUserMapper.cs" />
+    <Compile Include="Mapper\IUserRoleMapper.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\EFDataContextAttribute.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\EFDataMapperAttribute.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\RoleColumnAttribute.cs" />
+    <Compile Include="Mapper\RoleColumnType.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\UserColumnAttribute.cs" />
+    <Compile Include="Mapper\UserColumnType.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\UserRoleColumnAttribute.cs" />
+    <Compile Include="Mapper\UserRoleColumnType.cs" />
+    <Compile Include="Models\Application.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="SR.cs" />
+    <Compile Include="Util.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+  <ItemGroup />
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

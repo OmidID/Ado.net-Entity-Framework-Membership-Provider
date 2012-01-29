@@ -1,0 +1,8 @@
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\bin\Sample2.dll
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\bin\Sample2.pdb
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\bin\OmidID.Web.Security.EFMembershipProvider.dll
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\bin\OmidID.Web.Security.EFMembershipProvider.pdb
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\bin\EntityFramework.xml
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\obj\Release\ResolveAssemblyReference.cache
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\obj\Release\Sample2.dll
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample2\obj\Release\Sample2.pdb

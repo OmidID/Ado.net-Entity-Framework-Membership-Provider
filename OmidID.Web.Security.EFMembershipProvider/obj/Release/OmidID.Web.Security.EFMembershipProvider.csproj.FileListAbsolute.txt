@@ -1,0 +1,10 @@
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\OmidID.Web.Security.EFMembershipProvider.dll
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\OmidID.Web.Security.EFMembershipProvider.pdb
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\EntityFramework.dll
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\EntityFramework.xml
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\ResolveAssemblyReference.cache
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.Properties.Resources.resources
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\GenerateResource.read.1.tlog
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\GenerateResource.write.1.tlog
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.EFMembershipProvider.dll
+F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.EFMembershipProvider.pdb

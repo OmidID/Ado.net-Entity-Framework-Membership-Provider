@@ -1,0 +1,62 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<fieldset>
+    <legend>Install and create database</legend>
+    <h2><font color="green">Database installed: @ViewBag.DatabaseInstalled</font></h2>
+    @if (!(bool)ViewBag.DatabaseInstalled) {
+        <i><font color="red">already you have database</font></i>
+    }
+</fieldset>
+<fieldset>
+    <legend>Type and table prefix</legend>
+    <h2>@Html.Raw(ViewBag.Providers)</h2>
+    <i>For change table <font color="red">prefix</font>/<font color="red">schema</font> open and edit web.config</i>
+        <pre style='color:#000000;background:#ffffff; font-size: 120%;'>
+        <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>membership</span> <span style='color:#274796; '>defaultProvider</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>OmidIDMembershipProvider</span><span style='color:#0000e6; '>"</span><span style='color:#a65700; '>></span>
+            <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>providers</span><span style='color:#a65700; '>></span>
+                <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>clear</span><span style='color:#a65700; '>/></span>
+                <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>add</span> <span style='color:#274796; '>name</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>OmidIDMembershipProvider</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>type</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>OmidID.Web.Security.EFMembershipProvider`2[[OmidID.Web.Security.Default.OldEf.EfUser, OmidID.Web.Security.EFMembershipProvider],</span>
+ <span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;[System.Int32]], OmidID.Web.Security.EFMembershipProvider</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>connectionStringName</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>ApplicationServices</span><span style='color:#0000e6; '>"</span> 
+                    <span style='color:red; '>tablePrefix</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:red; '>tableSchema</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span>dbo<span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>enablePasswordRetrieval</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>false</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>enablePasswordReset</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>true</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>requiresQuestionAndAnswer</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>false</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>requiresUniqueEmail</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>false</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>maxInvalidPasswordAttempts</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>5</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>minRequiredPasswordLength</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>6</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>minRequiredNonalphanumericCharacters</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>0</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>passwordAttemptWindow</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>10</span><span style='color:#0000e6; '>"</span>
+                    <span style='color:#274796; '>applicationName</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>/</span><span style='color:#0000e6; '>"</span> <span style='color:#a65700; '>/></span>
+            <span style='color:#a65700; '>&lt;/</span><span style='color:#5f5035; '>providers</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;/</span><span style='color:#5f5035; '>membership</span><span style='color:#a65700; '>></span>
+
+        <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>roleManager</span> <span style='color:#274796; '>enabled</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>true</span><span style='color:#0000e6; '>"</span> <span style='color:#274796; '>defaultProvider</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>OmidIDRoleProvider</span><span style='color:#0000e6; '>"</span><span style='color:#a65700; '>></span>
+            <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>providers</span><span style='color:#a65700; '>></span>
+                <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>clear</span><span style='color:#a65700; '>/></span>
+                <span style='color:#a65700; '>&lt;</span><span style='color:#5f5035; '>add</span> <span style='color:#274796; '>name</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>OmidIDRoleProvider</span><span style='color:#0000e6; '>"</span>
+                <span style='color:#274796; '>type</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>OmidID.Web.Security.EFRoleProvider`3[[OmidID.Web.Security.Default.OldEf.EfRole, OmidID.Web.Security.EFMembershipProvider],</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;[OmidID.Web.Security.Default.OldEf.EfUserInRole, OmidID.Web.Security.EFMembershipProvider],</span>
+<span style='color:#0000e6; '>&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;&#xa0;[System.Int32]], OmidID.Web.Security.EFMembershipProvider</span><span style='color:#0000e6; '>"</span>
+                <span style='color:#274796; '>connectionStringName</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>ApplicationServices</span><span style='color:#0000e6; '>"</span> 
+                <span style='color:red; '>tablePrefix</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>"</span>
+                <span style='color:red; '>tableSchema</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span>dbo<span style='color:#0000e6; '>"</span>
+                <span style='color:#274796; '>applicationName</span><span style='color:#808030; '>=</span><span style='color:#0000e6; '>"</span><span style='color:#0000e6; '>/</span><span style='color:#0000e6; '>"</span> <span style='color:#a65700; '>/></span>
+            <span style='color:#a65700; '>&lt;/</span><span style='color:#5f5035; '>providers</span><span style='color:#a65700; '>></span>
+        <span style='color:#a65700; '>&lt;/</span><span style='color:#5f5035; '>roleManager</span><span style='color:#a65700; '>></span>
+    </pre>
+</fieldset>
+<fieldset>
+    <legend>Test provider</legend>
+    <p>@Html.Raw(ViewBag.Message)</p>
+    <a href="http://efmembership.codeplex.com" title="EFMembership Source code page"><b>Please leave you comment and/or rate me!!!</b></a>
+</fieldset>
+<p>
+    <p>Please use @Html.ActionLink("Log On", "LogOn", "Account") menu to register new user and login</p>
+    To learn more about EFMembership visit <a href="http://efmembership.codeplex.com" title="EFMembership Source code page">http://efmembership.codeplex.com</a>.<br />
+    To learn more about ASP.NET MVC visit <a href="http://asp.net/mvc" title="ASP.NET MVC Website">http://asp.net/mvc</a>.
+</p>

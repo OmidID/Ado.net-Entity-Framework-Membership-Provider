@@ -7,3 +7,12 @@ F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\S
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\obj\Release\ResolveAssemblyReference.cache
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\obj\Release\Sample1.dll
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\obj\Release\Sample1.pdb
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\bin\Sample1.dll
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\bin\Sample1.pdb
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\bin\OmidID.Web.Security.EFMembershipProvider.dll
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\bin\EntityFramework.dll
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\bin\OmidID.Web.Security.EFMembershipProvider.pdb
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\bin\EntityFramework.xml
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\obj\Release\ResolveAssemblyReference.cache
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\obj\Release\Sample1.dll
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\Samples\Sample1\obj\Release\Sample1.pdb

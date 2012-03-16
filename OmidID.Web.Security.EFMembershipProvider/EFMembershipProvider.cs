@@ -349,7 +349,7 @@ namespace OmidID.Web.Security {
                     var failedOn = Mapper.FailedPasswordAttemptWindowStart(User);
 
                     var utc = DateTime.UtcNow;
-                    if (failedOn.AddMinutes(this.PasswordAttemptWindow) >= utc)
+                    if (failedOn.AddMinutes(this.PasswordAttemptWindow) <= utc)
                         Mapper.FailedPasswordAttemptCount(User, 1);
                     else
                         Mapper.FailedPasswordAttemptCount(User, faileds);
@@ -382,7 +382,7 @@ namespace OmidID.Web.Security {
                     var failedOn = Mapper.FailedPasswordAnswerAttemptWindowStart(User);
 
                     var utc = DateTime.UtcNow;
-                    if (failedOn.AddMinutes(this.PasswordAttemptWindow) >= utc)
+                    if (failedOn.AddMinutes(this.PasswordAttemptWindow) <= utc)
                         Mapper.FailedPasswordAnswerAttemptCount(User, 1);
                     else
                         Mapper.FailedPasswordAnswerAttemptCount(User, faileds);

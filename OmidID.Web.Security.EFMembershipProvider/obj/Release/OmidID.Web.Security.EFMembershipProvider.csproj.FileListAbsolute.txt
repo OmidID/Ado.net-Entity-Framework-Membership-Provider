@@ -8,3 +8,14 @@ F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\O
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\GenerateResource.write.1.tlog
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.EFMembershipProvider.dll
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.EFMembershipProvider.pdb
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\OmidID.Web.Security.EFMembershipProvider.dll.config
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\OmidID.Web.Security.EFMembershipProvider.dll
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\OmidID.Web.Security.EFMembershipProvider.pdb
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\EntityFramework.dll
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\bin\Release\EntityFramework.xml
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\ResolveAssemblyReference.cache
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.Properties.Resources.resources
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\GenerateResource.read.1.tlog
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\GenerateResource.write.1.tlog
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.EFMembershipProvider.dll
+E:\Omid\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Release\OmidID.Web.Security.EFMembershipProvider.pdb

@@ -6,6 +6,7 @@ using System.Data.Entity;
 using System.ComponentModel.DataAnnotations;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity.ModelConfiguration.Conventions;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OmidID.Web.Security {
     class InternalInstallDataContext : DbContext {

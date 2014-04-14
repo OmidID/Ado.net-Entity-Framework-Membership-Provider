@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Web.Security;
 
 namespace OmidID.Web.Security.Mapper {
@@ -69,6 +66,23 @@ namespace OmidID.Web.Security.Mapper {
 
         bool IsLockedOut(TUser user);
         IUserMapper<TUser> IsLockedOut(TUser user, bool value);
+
+
+#if USE_WEBMATRIX
+
+        string WebMatrixConfirmationCode(TUser user);
+        IUserMapper<TUser> WebMatrixConfirmationCode(TUser user, string value);
+
+        string WebMatrixPasswordValidationToken(TUser user);
+        IUserMapper<TUser> WebMatrixPasswordValidationToken(TUser user, string value);
+
+        DateTime WebMatrixPasswordValidationTokenExpireOn(TUser user);
+        IUserMapper<TUser> WebMatrixPasswordValidationTokenExpireOn(TUser user, DateTime value);
+
+        bool WebMatrixRegistered(TUser user);
+        IUserMapper<TUser> WebMatrixRegistered(TUser user, bool value);
+
+#endif
 
     }
 }

@@ -10,10 +10,11 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>OmidID.Web.Security</RootNamespace>
     <AssemblyName>OmidID.Web.Security.EFMembershipProvider</AssemblyName>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\..\OmidID.Web.Security.EFMembershipProvider\</SolutionDir>
     <RestorePackages>true</RestorePackages>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -31,16 +33,19 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EntityFramework, Version=4.3.1.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\EntityFramework.4.3.1\lib\net40\EntityFramework.dll</HintPath>
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.0\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Data.Entity" />
     <Reference Include="System.Web" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.Xml.Linq" />
@@ -62,6 +67,7 @@
     <Compile Include="Default\AspNet\AspUser.cs" />
     <Compile Include="Default\AspNet\AspUserInRole.cs" />
     <Compile Include="Default\DefaultApplication.cs" />
+    <Compile Include="Default\DefaultOAuthMembership.cs" />
     <Compile Include="Default\DefaultRole.cs" />
     <Compile Include="Default\DefaultUser.cs" />
     <Compile Include="Default\DefaultUserRole.cs" />
@@ -75,7 +81,10 @@
     <Compile Include="EFRoleProvider.cs" />
     <Compile Include="Installer.cs" />
     <Compile Include="InternalInstallDataContext.cs" />
+    <Compile Include="Mapper\IOAuthMembershipMapper.cs" />
     <Compile Include="Mapper\IProviderMapper.cs" />
+    <Compile Include="Mapper\OAuthMembershipAutoMapper.cs" />
+    <Compile Include="Mapper\OAuthMembershipColumnType.cs" />
     <Compile Include="Mapper\RoleAutoMapper.cs" />
     <Compile Include="Mapper\UserRoleAutoMapper.cs" />
     <Compile Include="System\ComponentModel\DataAnnotations\JoinItAttribute.cs" />
@@ -89,6 +98,7 @@
     <Compile Include="Mapper\IUserRoleMapper.cs" />
     <Compile Include="System\ComponentModel\DataAnnotations\EFDataContextAttribute.cs" />
     <Compile Include="System\ComponentModel\DataAnnotations\EFDataMapperAttribute.cs" />
+    <Compile Include="System\ComponentModel\DataAnnotations\OAuthMembershipAttribute.cs" />
     <Compile Include="System\ComponentModel\DataAnnotations\RoleColumnAttribute.cs" />
     <Compile Include="Mapper\RoleColumnType.cs" />
     <Compile Include="System\ComponentModel\DataAnnotations\UserColumnAttribute.cs" />

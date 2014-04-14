@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-
+﻿
 namespace OmidID.Web.Security.Mapper {
     public enum UserColumnType {
 
@@ -27,7 +23,17 @@ namespace OmidID.Web.Security.Mapper {
         FailedPasswordAnswerAttemptWindowStart,
         Comment,
         IsLockedOut,
+        ProviderVerification,
+        ProviderVerificationExpireOn,
         Application
+
+#if USE_WEBMATRIX
+        ,
+        ConfirmationCode,
+        PasswordValidationToken,
+        PasswordValidationTokenExpireOn,
+        Registered
+#endif
 
     }
 }

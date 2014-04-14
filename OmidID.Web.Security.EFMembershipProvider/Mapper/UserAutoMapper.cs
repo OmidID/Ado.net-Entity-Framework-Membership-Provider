@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Security;
 using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
+using System.Web.Security;
 
 namespace OmidID.Web.Security.Mapper {
     internal class UserAutoMapper<TUser> : IUserMapper<TUser>
@@ -167,5 +164,24 @@ namespace OmidID.Web.Security.Mapper {
         public IUserMapper<TUser> IsLockedOut(TUser user, bool value) { Set(user, UserColumnType.IsLockedOut, value); return this; }
 
         #endregion
+
+        #region WebMatrix
+#if USE_WEBMATRIX
+
+        public string WebMatrixConfirmationCode(TUser user) { return Get<string>(user, UserColumnType.ConfirmationCode); }
+        public IUserMapper<TUser> WebMatrixConfirmationCode(TUser user, string value) { Set(user, UserColumnType.ConfirmationCode, value); return this; }
+
+        public string WebMatrixPasswordValidationToken(TUser user) { return Get<string>(user, UserColumnType.PasswordValidationToken); }
+        public IUserMapper<TUser> WebMatrixPasswordValidationToken(TUser user, string value) { Set(user, UserColumnType.PasswordValidationToken, value); return this; }
+
+        public DateTime WebMatrixPasswordValidationTokenExpireOn(TUser user) { return Get<DateTime>(user, UserColumnType.PasswordValidationTokenExpireOn); }
+        public IUserMapper<TUser> WebMatrixPasswordValidationTokenExpireOn(TUser user, DateTime value) { Set(user, UserColumnType.PasswordValidationTokenExpireOn, value); return this; }
+
+        public bool WebMatrixRegistered(TUser user) { return Get<bool>(user, UserColumnType.Registered); }
+        public IUserMapper<TUser> WebMatrixRegistered(TUser user, bool value) { Set(user, UserColumnType.Registered, value); return this; }
+
+#endif
+        #endregion
+
     }
 }

@@ -18,3 +18,15 @@ F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\O
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\GenerateResource.write.1.tlog
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\OmidID.Web.Security.EFMembershipProvider.dll
 F:\Laptop Backup\D\Projects\Component\OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\OmidID.Web.Security.EFMembershipProvider.pdb
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\bin\Debug\OmidID.Web.Security.EFMembershipProvider.dll.config
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\bin\Debug\OmidID.Web.Security.EFMembershipProvider.dll
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\bin\Debug\OmidID.Web.Security.EFMembershipProvider.pdb
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\bin\Debug\EntityFramework.dll
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\bin\Debug\EntityFramework.SqlServer.dll
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\bin\Debug\EntityFramework.xml
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\bin\Debug\EntityFramework.SqlServer.xml
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\OmidID.Web.Security.Properties.Resources.resources
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\OmidID.Web.Security.EFMembershipProvider.csproj.GenerateResource.Cache
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\OmidID.Web.Security.EFMembershipProvider.dll
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\OmidID.Web.Security.EFMembershipProvider.pdb
+D:\Projects\Component\Ado.net-Entity-Framework-Membership-Provider\OmidID.Web.Security.EFMembershipProvider\obj\Debug\OmidID.Web.Security.EFMembershipProvider.csprojResolveAssemblyReference.cache

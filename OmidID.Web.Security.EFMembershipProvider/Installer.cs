@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Security;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 using System.Reflection;
+using System.Web.Security;
 
 namespace OmidID.Web.Security {
     public class Installer {
@@ -16,12 +16,19 @@ namespace OmidID.Web.Security {
             var TableNames = new Dictionary<Type, TableAttribute>();
             var cnn = "";
             if (MembershipProvider != null) {
-                if (MembershipProvider.GetType().GetGenericTypeDefinition() != typeof(EFMembershipProvider<,>))
-                    throw new ArgumentException("INSTALL_Invalid_membership_provider_type".Resource());
-
+                //if (MembershipProvider.GetType().GetGenericTypeDefinition() != typeof(EFMembershipProvider<,,>))
+                //    throw new ArgumentException("INSTALL_Invalid_membership_provider_type".Resource());
+                    
                 dynamic tablePrefix = ((dynamic)MembershipProvider).TablePrefix;
                 dynamic tableSchema = ((dynamic)MembershipProvider).TableSchema;
                 dynamic helper = ((dynamic)MembershipProvider).Helper;
+#if USE_WEBMATRIX
+                dynamic helper_oauth = ((dynamic)MembershipProvider).Helper_OAuth;
+                
+                foreach (var item in (Dictionary<Type, TableAttribute>)helper_oauth.TableNames)
+                    TableNames[item.Key] = item.Value;
+
+#endif
                 cnn = ((dynamic)MembershipProvider).ConnectionString;
                 foreach (var item in (Dictionary<Type, TableAttribute>)helper.TableNames)
                     TableNames[item.Key] = item.Value;
@@ -54,8 +61,8 @@ namespace OmidID.Web.Security {
             }
 
             if (RoleProvider != null) {
-                if (RoleProvider.GetType().GetGenericTypeDefinition() != typeof(EFRoleProvider<,,>))
-                    throw new ArgumentException("INSTALL_Invalid_role_provider_type".Resource());
+                //if (RoleProvider.GetType().GetGenericTypeDefinition() != typeof(EFRoleProvider<,,>))
+                //    throw new ArgumentException("INSTALL_Invalid_role_provider_type".Resource());
 
                 dynamic tablePrefix = ((dynamic)RoleProvider).TablePrefix;
                 dynamic tableSchema = ((dynamic)RoleProvider).TableSchema;
@@ -99,8 +106,23 @@ namespace OmidID.Web.Security {
 
             var internalContext = new InternalInstallDataContext(cnn);
             internalContext.TableNames = TableNames;
+
+            
+                //System.Data.Entity.Migrations.DbMigrator mig = new System.Data.Entity.Migrations.DbMigrator()
+                //mig.Update();
+
             return internalContext.Database.CreateIfNotExists();
         }
+
+        //public class UpgradeDb : System.Data.Entity.Migrations.DbMigration {
+
+        //    public override void Up() {
+        //        var cnf = new System.Data.Entity.Migrations.
+        //        System.Data.Entity.Migrations.DbMigrator mig = new System.Data.Entity.Migrations.DbMigrator();
+        //        mig.Update();
+        //    }
+
+        //}
 
     }
 }

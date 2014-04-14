@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Data.Entity;
 using System.ComponentModel.DataAnnotations;
-using System.Linq.Expressions;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.Data.Entity;
 using System.Data.Entity.Infrastructure;
+using System.Linq;
+using System.Linq.Expressions;
 
 namespace OmidID.Web.Security.DataContext {
 
-    public class DefaultUserContext<TUser, TKey> : IUserContext<TUser, TKey>
+    public class DefaultUserContext
+#if USE_WEBMATRIX
+<TUser, TOAuthMembership, TKey> : IUserContext<TUser, TOAuthMembership, TKey>
+        where TUser : class
+        where TOAuthMembership : class
+        where TKey : struct {
+#else
+<TUser, TKey> : IUserContext<TUser, TKey>
         where TUser : class
         where TKey : struct {
+#endif
+
 
         #region Variables
 
@@ -21,10 +30,16 @@ namespace OmidID.Web.Security.DataContext {
         #endregion
 
         #region Properties
-
+#if USE_WEBMATRIX
+        public EFMembershipProvider<TUser, TOAuthMembership, TKey> Provider { get; set; }
+        internal Mapper.ClassHelper<TUser, Mapper.UserColumnType, UserColumnAttribute> Helper { get; set; }
+        internal Mapper.ClassHelper<TOAuthMembership, Mapper.OAuthMembershipColumnType, OAuthMembershipAttribute> Helper_OAuth { get; set; }
+        public Type OAuthType { get; set; }
+#else
         public EFMembershipProvider<TUser, TKey> Provider { get; set; }
         internal Mapper.ClassHelper<TUser, Mapper.UserColumnType, UserColumnAttribute> Helper { get; set; }
 
+#endif
         public Type UserType { get; set; }
         public bool UserTableNoPrefix { get; private set; }
         public TableAttribute UserTableName { get; private set; }
@@ -37,18 +52,41 @@ namespace OmidID.Web.Security.DataContext {
 
         #region Initialize And Constractor
 
+#if USE_WEBMATRIX
+        internal InternalUserContext<TUser, TOAuthMembership, TKey> GetDatabase() {
+            return new InternalUserContext<TUser, TOAuthMembership, TKey>(this);
+        }
+#else
         internal InternalUserContext<TUser, TKey> GetDatabase() {
             return new InternalUserContext<TUser, TKey>(this);
         }
+#endif
 
-        internal DefaultUserContext(Mapper.ClassHelper<TUser, Mapper.UserColumnType, UserColumnAttribute> Helper) {
+        internal DefaultUserContext(Mapper.ClassHelper<TUser, Mapper.UserColumnType, UserColumnAttribute> Helper
+#if USE_WEBMATRIX
+                                    ,Mapper.ClassHelper<TOAuthMembership, Mapper.OAuthMembershipColumnType, OAuthMembershipAttribute> Helper_OAuth
+#endif
+) {
             this.Helper = Helper;
+#if USE_WEBMATRIX
+            this.Helper_OAuth = Helper_OAuth;
+#endif
         }
 
-        public void Initialize(EFMembershipProvider<TUser, TKey> Provider) {
+        public void Initialize(
+#if USE_WEBMATRIX
+            EFMembershipProvider<TUser, TOAuthMembership, TKey> Provider
+#else
+            EFMembershipProvider<TUser, TKey> Provider
+#endif
+
+) {
             this.Provider = Provider;
 
             var userType = typeof(TUser);
+#if USE_WEBMATRIX
+            OAuthType = typeof(TOAuthMembership);
+#endif
             var tblNameAttr = userType.GetCustomAttributes(typeof(TableAttribute), true);
             var noPrefixAttr = userType.GetCustomAttributes(typeof(NoPrefixAttribute), true);
 
@@ -101,6 +139,17 @@ namespace OmidID.Web.Security.DataContext {
             return current;
         }
 
+#if USE_WEBMATRIX
+
+        private DbQuery<T> Include_OAuth<T>(DbSet<T> dbset) where T : class {
+            DbQuery<T> current = dbset;
+            foreach (var inc in Helper_OAuth.Includes)
+                current = current.Include(inc);
+            return current;
+        }
+
+#endif
+
         #endregion
 
         #region Expression(s)
@@ -132,6 +181,31 @@ namespace OmidID.Web.Security.DataContext {
 
             return Expression.Lambda<Func<TUser, bool>>(equal, param);
         }
+
+#if USE_WEBMATRIX
+
+        private Expression<Func<TOAuthMembership, bool>> GetOAuthLambda(Mapper.OAuthMembershipColumnType columnType, object value) {
+            var param = Expression.Parameter(OAuthType, "p");
+            var memberAccess = Helper_OAuth.GetMemberAccess(param, columnType);
+            var content = Expression.Constant(value);
+            var equal = Expression.Equal(memberAccess, content);
+
+            return Expression.Lambda<Func<TOAuthMembership, bool>>(equal, param);
+        }
+
+        private Expression<Func<TOAuthMembership, bool>> GetOAuthDualLambda(Mapper.OAuthMembershipColumnType columnType1, object value1, Mapper.OAuthMembershipColumnType columnType2, object value2) {
+            var param = Expression.Parameter(OAuthType, "p");
+            var memberAccess1 = Helper_OAuth.GetMemberAccess(param, columnType1);
+            var memberAccess2 = Helper_OAuth.GetMemberAccess(param, columnType2);
+            var content1 = Expression.Constant(value1);
+            var content2 = Expression.Constant(value2);
+            var equal1 = Expression.Equal(memberAccess1, content1);
+            var equal2 = Expression.Equal(memberAccess2, content2);
+
+            return Expression.Lambda<Func<TOAuthMembership, bool>>(Expression.And(equal1, equal2), param);
+        }
+
+#endif
 
         private Expression<Func<TUser, bool>> GetUserContainsLambda(Mapper.UserColumnType columnType, string value, bool appFilter) {
             var param = Expression.Parameter(UserType, "p");
@@ -230,7 +304,7 @@ namespace OmidID.Web.Security.DataContext {
 
         public TUser Update(TUser Entity) {
             using (var db = GetDatabase()) {
-                db.Entry<TUser>(Entity).State = System.Data.EntityState.Modified;
+                db.Entry<TUser>(Entity).State = EntityState.Modified;
                 if (Provider.SupportApplication)
                     Provider.Mapper.Set(Entity, Mapper.UserColumnType.Application, db.GetApplication());
 
@@ -246,7 +320,7 @@ namespace OmidID.Web.Security.DataContext {
 
         public TUser Delete(TUser Entity) {
             using (var db = GetDatabase()) {
-                db.Entry<TUser>(Entity).State = System.Data.EntityState.Deleted;
+                db.Entry<TUser>(Entity).State = EntityState.Deleted;
                 db.SaveChanges();
 
                 return Entity;
@@ -338,6 +412,72 @@ namespace OmidID.Web.Security.DataContext {
         }
 
         #endregion
+
+#if USE_WEBMATRIX
+
+        public TUser GetByConfirmationCode(string confirmToken) {
+            using (var db = GetDatabase())
+                return Include(db.Users).FirstOrDefault(GetUserLambda(Mapper.UserColumnType.ConfirmationCode, confirmToken, true));
+        }
+
+        public TUser GetByConfirmationCode(string username, string confirmToken) {
+            using (var db = GetDatabase())
+                return Include(db.Users).Where(GetUserLambda(Mapper.UserColumnType.Username, username, true))
+                                        .FirstOrDefault(GetUserLambda(Mapper.UserColumnType.ConfirmationCode, confirmToken, true));
+        }
+
+        public TUser GetUserByPasswordToken(string Token) {
+            using (var db = GetDatabase())
+                return Include(db.Users).FirstOrDefault(GetUserLambda(Mapper.UserColumnType.PasswordValidationToken, Token, true));
+        }
+
+        public IEnumerable<TOAuthMembership> GetAccountsForUser(string username) {
+            using (var db = GetDatabase()) {
+                var user = Include(db.Users).FirstOrDefault(GetUserLambda(Mapper.UserColumnType.Username, username, true));
+                return Include_OAuth(db.OAuthMembership).Where(GetOAuthLambda(Mapper.OAuthMembershipColumnType.UserID, Provider.Mapper.UserID(user))).ToArray();
+            }
+        }
+
+
+        public TOAuthMembership GetOAuthMembership(string provider, string providerUserID) {
+            using (var db = GetDatabase())
+                return Include_OAuth(db.OAuthMembership).FirstOrDefault(GetOAuthDualLambda(Mapper.OAuthMembershipColumnType.ProviderName, provider, Mapper.OAuthMembershipColumnType.ProviderToken, providerUserID));
+        }
+
+        public TOAuthMembership AddOAuth(TOAuthMembership Entity) {
+            using (var db = GetDatabase())
+                try {
+                    db.OAuthMembership.Add(Entity);
+                    db.SaveChanges();
+                } catch (Exception ex) {
+                    throw ex;
+                }
+            return Entity;
+        }
+
+        public TOAuthMembership UpdateOAuth(TOAuthMembership Entity) {
+            using (var db = GetDatabase())
+                try {
+                    db.Entry(Entity).State = EntityState.Modified;
+                    db.SaveChanges();
+                } catch (Exception ex) {
+                    throw ex;
+                }
+            return Entity;
+        }
+
+        public TOAuthMembership DeleteOAuth(TOAuthMembership Entity) {
+            using (var db = GetDatabase())
+                try {
+                    db.Entry(Entity).State = EntityState.Deleted;
+                    db.SaveChanges();
+                } catch (Exception ex) {
+                    throw ex;
+                }
+            return Entity;
+        }
+
+#endif
 
     }
 }

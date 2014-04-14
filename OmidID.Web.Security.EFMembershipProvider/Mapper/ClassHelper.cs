@@ -5,6 +5,7 @@ using System.Text;
 using System.Reflection;
 using System.Linq.Expressions;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OmidID.Web.Security.Mapper {
     internal class ClassHelper<T, TEnum, TAttr>
@@ -53,7 +54,7 @@ namespace OmidID.Web.Security.Mapper {
             var props = CheckType.GetProperties();
             var attrType = typeof(TAttr);
             var joinAttrType = typeof(System.ComponentModel.DataAnnotations.JoinItAttribute);
-            var tableAttrType = typeof(System.ComponentModel.DataAnnotations.TableAttribute);
+            var tableAttrType = typeof(TableAttribute);
             var noPrefixAttrType = typeof(System.ComponentModel.DataAnnotations.NoPrefixAttribute);
 
             var names = CheckType.GetCustomAttributes(tableAttrType, true);

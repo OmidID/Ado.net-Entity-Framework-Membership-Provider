@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using OmidID.Web.Security.Mapper;
+﻿using OmidID.Web.Security.Mapper;
+using System;
 using System.Web.Security;
 
 namespace OmidID.Web.Security.Default.OldEf {
@@ -177,5 +174,38 @@ namespace OmidID.Web.Security.Default.OldEf {
         public IUserMapper<EfUser> IsLockedOut(EfUser user, bool value) { Set(user, UserColumnType.IsLockedOut, value); return this; }
 
         #endregion
+
+
+        public string WebMatrixConfirmationCode(EfUser user) {
+            throw new NotImplementedException();
+        }
+
+        public IUserMapper<EfUser> WebMatrixConfirmationCode(EfUser user, string value) {
+            throw new NotImplementedException();
+        }
+
+        public string WebMatrixPasswordValidationToken(EfUser user) {
+            throw new NotImplementedException();
+        }
+
+        public IUserMapper<EfUser> WebMatrixPasswordValidationToken(EfUser user, string value) {
+            throw new NotImplementedException();
+        }
+
+        public DateTime WebMatrixPasswordValidationTokenExpireOn(EfUser user) {
+            throw new NotImplementedException();
+        }
+
+        public IUserMapper<EfUser> WebMatrixPasswordValidationTokenExpireOn(EfUser user, DateTime value) {
+            throw new NotImplementedException();
+        }
+
+        public bool WebMatrixRegistered(EfUser user) {
+            throw new NotImplementedException();
+        }
+
+        public IUserMapper<EfUser> WebMatrixRegistered(EfUser user, bool value) {
+            throw new NotImplementedException();
+        }
     }
 }

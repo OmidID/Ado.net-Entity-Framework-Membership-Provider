@@ -1,12 +1,18 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmidID.Web.Security.EFMembershipProvider", "OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider.csproj", "{7E6B0076-4E80-4D18-B5F2-2C293C36A63E}"
-EndProject
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{870F8F08-1B08-4E2C-AB47-45ADCB5550B4}"
 	ProjectSection(SolutionItems) = preProject
 		README = README
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CD700A86-B881-4BA4-AB28-A1C0445F9E2C}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmidID.Web.Security.EFMembershipProvider", "OmidID.Web.Security.EFMembershipProvider\OmidID.Web.Security.EFMembershipProvider.csproj", "{7E6B0076-4E80-4D18-B5F2-2C293C36A63E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample1", "Samples\Sample1\Sample1.csproj", "{B47A87BB-3184-4FDF-BA3B-9F12AE3537D7}"
 EndProject
@@ -14,11 +20,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample2", "Samples\Sample2\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample3", "Samples\Sample3\Sample3.csproj", "{37A9935D-68E0-4C30-BA36-8E5DACDC9726}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{CD700A86-B881-4BA4-AB28-A1C0445F9E2C}"
-	ProjectSection(SolutionItems) = preProject
-		.nuget\NuGet.exe = .nuget\NuGet.exe
-		.nuget\NuGet.targets = .nuget\NuGet.targets
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OmidID.Web.Security.EFMembershipProvider_WebMatrix", "OmidID.Web.Security.EFMembershipProvider_WebMatrix\OmidID.Web.Security.EFMembershipProvider_WebMatrix.csproj", "{ADD76880-B737-41CB-AED9-A312D4377B3A}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Default Samples", "Default Samples", "{D5C9C503-2CA8-4E3A-8CAF-A45BCC14C758}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "WebMatrix Samples", "WebMatrix Samples", "{7035B759-FA71-4A8D-A13D-B2DC36703AF4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebMatrix_Sample1", "Samples\WebMatrix_Sample1\WebMatrix_Sample1.csproj", "{8EE52620-6B70-4199-B246-C7BD00585E1F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,8 +50,22 @@ Global
 		{37A9935D-68E0-4C30-BA36-8E5DACDC9726}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{37A9935D-68E0-4C30-BA36-8E5DACDC9726}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{37A9935D-68E0-4C30-BA36-8E5DACDC9726}.Release|Any CPU.Build.0 = Release|Any CPU
+		{ADD76880-B737-41CB-AED9-A312D4377B3A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{ADD76880-B737-41CB-AED9-A312D4377B3A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{ADD76880-B737-41CB-AED9-A312D4377B3A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{ADD76880-B737-41CB-AED9-A312D4377B3A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8EE52620-6B70-4199-B246-C7BD00585E1F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8EE52620-6B70-4199-B246-C7BD00585E1F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8EE52620-6B70-4199-B246-C7BD00585E1F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8EE52620-6B70-4199-B246-C7BD00585E1F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B47A87BB-3184-4FDF-BA3B-9F12AE3537D7} = {D5C9C503-2CA8-4E3A-8CAF-A45BCC14C758}
+		{390DF616-52FF-417D-BAEF-602763CE2C28} = {D5C9C503-2CA8-4E3A-8CAF-A45BCC14C758}
+		{37A9935D-68E0-4C30-BA36-8E5DACDC9726} = {D5C9C503-2CA8-4E3A-8CAF-A45BCC14C758}
+		{8EE52620-6B70-4199-B246-C7BD00585E1F} = {7035B759-FA71-4A8D-A13D-B2DC36703AF4}
 	EndGlobalSection
 EndGlobal

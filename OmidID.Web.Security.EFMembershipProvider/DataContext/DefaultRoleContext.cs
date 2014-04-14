@@ -6,6 +6,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq.Expressions;
 using System.Data.Entity.Infrastructure;
 using System.Data.Entity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OmidID.Web.Security.DataContext {
     public class DefaultRoleContext<TRole, TUserRole, TRoleKey> : IRoleContext<TRole, TUserRole, TRoleKey>
@@ -277,7 +278,7 @@ namespace OmidID.Web.Security.DataContext {
                 if (Provider.SupportApplication)
                     Provider.RoleMapper.Set(Role, Mapper.RoleColumnType.Application, db.GetApplication());
 
-                db.Entry<TRole>(Role).State = System.Data.EntityState.Modified;
+                db.Entry<TRole>(Role).State = EntityState.Modified;
                 db.SaveChanges();
 
                 return Role;
@@ -286,7 +287,7 @@ namespace OmidID.Web.Security.DataContext {
 
         public TRole DeleteRole(TRole Role) {
             using (var db = GetDatabase()) {
-                db.Entry<TRole>(Role).State = System.Data.EntityState.Deleted;
+                db.Entry<TRole>(Role).State = EntityState.Deleted;
                 db.SaveChanges();
 
                 return Role;

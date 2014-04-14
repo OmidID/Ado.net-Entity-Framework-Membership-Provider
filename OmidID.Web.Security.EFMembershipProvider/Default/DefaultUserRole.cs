@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OmidID.Web.Security.Mapper;
 using System.ComponentModel.DataAnnotations;
-using OmidID.Web.Security.Mapper;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OmidID.Web.Security.Default {
 
@@ -18,7 +15,13 @@ namespace OmidID.Web.Security.Default {
         [Key]
         [Column(Order = 2)]
         [UserRoleColumn(UserRoleColumnType.UserID)]
-        public long UserID { get; set; }
+        public
+#if USE_WEBMATRIX
+        int
+#else
+        long
+#endif
+        UserID { get; set; }
 
         [ForeignKey("UserID")]
         public DefaultUser User { get; set; }

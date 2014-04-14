@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Security;
-using System.Configuration.Provider;
-using System.ComponentModel.DataAnnotations;
 using System.Collections;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Configuration.Provider;
+using System.Linq;
+using System.Web.Security;
 
 namespace OmidID.Web.Security {
     public class EFRoleProvider<TRole, TUserRole, TRoleKey> : RoleProvider
@@ -68,12 +67,47 @@ namespace OmidID.Web.Security {
                 throw new ProviderException("Membership_provider_not_found".Resource());
 
             var memType = membership.GetType();
+#if USE_WEBMATRIX
+            var memDefType = typeof(EFMembershipProvider<,,>);
+#else
             var memDefType = typeof(EFMembershipProvider<,>);
+#endif
 
-            if (memDefType.Module != memType.Module)
+            var tmpType = memType;
+            var isType = false;
+            while (tmpType != null) {
+                var myTmp = default(Type);
+                if (tmpType.IsGenericType)
+                    myTmp = tmpType.GetGenericTypeDefinition();
+                else
+                    myTmp = tmpType;
+
+                if (myTmp.IsSubclassOf(memDefType)) {
+                    isType = true;
+                    break;
+                }
+                if (myTmp.IsAssignableFrom(memDefType)) {
+                    isType = true;
+                    break;
+                }
+                if (myTmp.IsInstanceOfType(memDefType)) {
+                    isType = true;
+                    break;
+                }
+                if (myTmp == memDefType) {
+                    isType = true;
+                    break;
+                }
+                tmpType = tmpType.BaseType;
+            }
+
+            if (!isType)
                 throw new ProviderException("Membership_provider_must_be_type_of_EFMembershipProvider".Resource());
-            if (!memDefType.Name.Equals(memType.Name))
-                throw new ProviderException("Membership_provider_must_be_type_of_EFMembershipProvider".Resource());
+
+            //if (memDefType.Module != memType.Module)
+            //    throw new ProviderException("Membership_provider_must_be_type_of_EFMembershipProvider".Resource());
+            //if (!memDefType.Name.Equals(memType.Name))
+            //    throw new ProviderException("Membership_provider_must_be_type_of_EFMembershipProvider".Resource());
 
             string temp = config["connectionStringName"];
             if (temp == null || temp.Length < 1)
@@ -121,8 +155,12 @@ namespace OmidID.Web.Security {
                 UserRoleMapper = new Mapper.UserRoleAutoMapper<TUserRole>(UserRoleHelper);
             }
 
-            var generics = memType.GetGenericArguments();
-            if (generics[1] != UserRoleHelper.Get(Mapper.UserRoleColumnType.UserID).PropertyType)
+            var generics = tmpType.GetGenericArguments();
+            var checkIndex = 1;
+#if USE_WEBMATRIX
+            checkIndex = 2;
+#endif
+            if (generics[checkIndex] != UserRoleHelper.Get(Mapper.UserRoleColumnType.UserID).PropertyType)
                 throw new ProviderException("Reflection_UserID_type_is_not_match".Resource());
 
             if (!UserRoleHelper.Properties.ContainsKey(Mapper.UserRoleColumnType.UserID))

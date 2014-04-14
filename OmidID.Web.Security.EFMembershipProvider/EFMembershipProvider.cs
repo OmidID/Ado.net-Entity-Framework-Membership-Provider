@@ -1,21 +1,36 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Web.Security;
-using System.Text.RegularExpressions;
-using System.Configuration.Provider;
-using System.Web.Configuration;
-using System.Security.Cryptography;
+﻿
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.Configuration;
+using System.Configuration.Provider;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Text.RegularExpressions;
+using System.Web.Configuration;
+using System.Web.Security;
 
 namespace OmidID.Web.Security {
-    public class EFMembershipProvider<TUser, TKey> : System.Web.Security.MembershipProvider
+    public class EFMembershipProvider
+
+#if USE_WEBMATRIX
+        <TUser, TOAuthMembership, TKey> :WebMatrix.WebData.ExtendedMembershipProvider
+
+        where TUser : class
+        where TOAuthMembership : class
+        where TKey : struct {
+#else
+<TUser, TKey> : System.Web.Security.MembershipProvider
+
         where TUser : class
         where TKey : struct {
+#endif
 
         #region Const
+
+#if USE_WEBMATRIX
+        private const int TokenSizeInBytes = 16;
+#endif
 
         private const int PASSWORD_SIZE = 14;
         private const int SALT_SIZE_IN_BYTES = 16;
@@ -34,6 +49,7 @@ namespace OmidID.Web.Security {
         private string _PasswordStrengthRegularExpression;
         private bool _RequiresQuestionAndAnswer;
         private bool _RequiresUniqueEmail;
+        private bool _RequiresEmail;
         private string _connectionString;
         private MembershipPasswordCompatibilityMode _LegacyPasswordCompatibilityMode;
         private string s_HashAlgorithm;
@@ -53,12 +69,19 @@ namespace OmidID.Web.Security {
         public override string PasswordStrengthRegularExpression { get { return _PasswordStrengthRegularExpression; } }
         public override bool RequiresQuestionAndAnswer { get { return _RequiresQuestionAndAnswer; } }
         public override bool RequiresUniqueEmail { get { return _RequiresUniqueEmail; } }
+        public bool RequiresEmail { get { return _RequiresEmail; } }
 
         public string ConnectionString { get { return _connectionString; } }
         public string TablePrefix { get; private set; }
         public string TableSchema { get; private set; }
 
+#if USE_WEBMATRIX
+        public DataContext.IUserContext<TUser, TOAuthMembership, TKey> Context { get; private set; }
+        public Mapper.IOAuthMembershipMapper<TOAuthMembership, TKey> Mapper_OAuth { get; private set; }
+        internal Mapper.ClassHelper<TOAuthMembership, Mapper.OAuthMembershipColumnType, OAuthMembershipAttribute> Helper_OAuth { get; set; }
+#else
         public DataContext.IUserContext<TUser, TKey> Context { get; private set; }
+#endif
         public Mapper.IUserMapper<TUser> Mapper { get; private set; }
         internal Mapper.ClassHelper<TUser, Mapper.UserColumnType, UserColumnAttribute> Helper { get; set; }
 
@@ -78,6 +101,11 @@ namespace OmidID.Web.Security {
         public bool SupportLastActivityDate { get; private set; }
         public bool SupportLastLockoutDate { get; private set; }
         public bool SupportLastPasswordChangedDate { get; private set; }
+
+#if USE_WEBMATRIX
+        public bool SupportWebMatrix { get; private set; }
+        public bool SupportWebMatrix_PasswordVerification { get; private set; }
+#endif
 
         #endregion
 
@@ -100,6 +128,7 @@ namespace OmidID.Web.Security {
             _EnablePasswordReset = config.GetBooleanValue("enablePasswordReset", true);
             _RequiresQuestionAndAnswer = config.GetBooleanValue("requiresQuestionAndAnswer", true);
             _RequiresUniqueEmail = config.GetBooleanValue("requiresUniqueEmail", true);
+            _RequiresEmail = config.GetBooleanValue("requiresEmail", true);
             _MaxInvalidPasswordAttempts = config.GetIntValue("maxInvalidPasswordAttempts", 5, false, 0);
             _PasswordAttemptWindow = config.GetIntValue("passwordAttemptWindow", 10, false, 0);
             _MinRequiredPasswordLength = config.GetIntValue("minRequiredPasswordLength", 7, false, 128);
@@ -149,6 +178,23 @@ namespace OmidID.Web.Security {
                 this._LegacyPasswordCompatibilityMode = (MembershipPasswordCompatibilityMode)Enum.Parse(typeof(MembershipPasswordCompatibilityMode), passwordCompactMode);
             }
 
+#if USE_WEBMATRIX
+            var type_oauth = typeof(TOAuthMembership);
+            var attr_oauth = type_oauth.GetCustomAttributes(typeof(EFDataMapperAttribute), false);
+
+            Helper_OAuth = new Mapper.ClassHelper<TOAuthMembership, Mapper.OAuthMembershipColumnType, OAuthMembershipAttribute>(TablePrefix, TableSchema);
+            if (attr_oauth != null && attr_oauth.Length > 0) {
+                var mapperAttr = attr_oauth[0] as EFDataMapperAttribute;
+                Mapper_OAuth = Activator.CreateInstance(mapperAttr.MapperType) as Mapper.IOAuthMembershipMapper<TOAuthMembership, TKey>;
+
+                if (Mapper_OAuth == null)
+                    throw new ProviderException("Reflection_can_not_cast_object".Resource(mapperAttr.MapperType.FullName,
+                                                                                          typeof(Mapper.IOAuthMembershipMapper<TOAuthMembership, TKey>).FullName));
+            } else {
+                Mapper_OAuth = new Mapper.OAuthMembershipAutoMapper<TOAuthMembership, TKey>(Helper_OAuth);
+            }
+#endif
+
             var type = typeof(TUser);
             var attr = type.GetCustomAttributes(typeof(EFDataMapperAttribute), false);
 
@@ -175,6 +221,20 @@ namespace OmidID.Web.Security {
             if (!Helper.Properties.ContainsKey(Security.Mapper.UserColumnType.PasswordSalt))
                 throw new ProviderException("Reflection_property_is_required".Resource("PasswordSalt"));
 
+#if USE_WEBMATRIX
+            if (!Helper_OAuth.Properties.ContainsKey(Security.Mapper.OAuthMembershipColumnType.UserID))
+                throw new ProviderException("Reflection_property_is_required_for_matrix".Resource("UserID"));
+            if (!Helper_OAuth.Properties.ContainsKey(Security.Mapper.OAuthMembershipColumnType.ProviderName))
+                throw new ProviderException("Reflection_property_is_required_for_matrix".Resource("ProviderName"));
+            if (!Helper_OAuth.Properties.ContainsKey(Security.Mapper.OAuthMembershipColumnType.ProviderToken))
+                throw new ProviderException("Reflection_property_is_required_for_matrix".Resource("ProviderToken"));
+
+
+            SupportWebMatrix = Helper.Properties.ContainsKey(Security.Mapper.UserColumnType.Registered);
+            SupportWebMatrix_PasswordVerification = Helper.Properties.ContainsKey(Security.Mapper.UserColumnType.ProviderVerification) &&
+                                                    Helper.Properties.ContainsKey(Security.Mapper.UserColumnType.ProviderVerificationExpireOn);
+#endif
+
             SupportApplication = Helper.Properties.ContainsKey(Security.Mapper.UserColumnType.Application);
             SupportEmail = Helper.Properties.ContainsKey(Security.Mapper.UserColumnType.Email);
             SupportComment = Helper.Properties.ContainsKey(Security.Mapper.UserColumnType.Comment);
@@ -199,13 +259,31 @@ namespace OmidID.Web.Security {
             attr = type.GetCustomAttributes(typeof(EFDataContextAttribute), false);
             if (attr != null && attr.Length > 0) {
                 var contextAttr = attr[0] as EFDataContextAttribute;
-                Context = Activator.CreateInstance(contextAttr.ContextType) as DataContext.IUserContext<TUser, TKey>;
+                Context = Activator.CreateInstance(contextAttr.ContextType) as
+#if USE_WEBMATRIX
+ DataContext.IUserContext<TUser, TOAuthMembership, TKey>;
+#else
+ DataContext.IUserContext<TUser, TKey>;
+#endif
+
                 if (Context == null) {
                     throw new ProviderException("Reflection_can_not_cast_object".Resource(contextAttr.ContextType.FullName,
-                                                                                          typeof(DataContext.IUserContext<TUser, TKey>).FullName));
+                                                                                          typeof(
+#if USE_WEBMATRIX
+DataContext.IUserContext<TUser, TOAuthMembership, TKey>
+#else
+DataContext.IUserContext<TUser, TKey>
+#endif
+).FullName));
                 }
             } else {
-                Context = new DataContext.DefaultUserContext<TUser, TKey>(Helper);
+                Context = new
+#if USE_WEBMATRIX
+ DataContext.DefaultUserContext<TUser, TOAuthMembership, TKey>(Helper, Helper_OAuth);
+#else
+ DataContext.DefaultUserContext<TUser, TKey>(Helper);
+#endif
+                //Context = new DataContext.DefaultUserContext<TUser, TKey>(Helper);
             }
             Context.Initialize(this);
 
@@ -221,7 +299,8 @@ namespace OmidID.Web.Security {
         }
 
         protected virtual bool IsValidEmail(string Email) {
-            if (string.IsNullOrWhiteSpace(Email)) return false;
+            if (string.IsNullOrWhiteSpace(Email))
+                return !RequiresEmail;
 
             var charNum1 = Email.IndexOf('@');
             if (charNum1 < 2) return false;
@@ -235,6 +314,20 @@ namespace OmidID.Web.Security {
         #endregion
 
         #region Password And Encoding
+
+#if USE_WEBMATRIX
+        private static string GenerateToken() {
+            using (var prng = new RNGCryptoServiceProvider()) {
+                return GenerateToken(prng);
+            }
+        }
+
+        internal static string GenerateToken(RandomNumberGenerator generator) {
+            byte[] tokenBytes = new byte[TokenSizeInBytes];
+            generator.GetBytes(tokenBytes);
+            return System.Web.HttpServerUtility.UrlTokenEncode(tokenBytes);
+        }
+#endif
 
         internal string EncodeAnswerPassword(string pass, MembershipPasswordFormat passwordFormat, string salt) {
             return EncodePassword(pass.ToLower().Trim(), passwordFormat, salt);
@@ -420,6 +513,8 @@ namespace OmidID.Web.Security {
                 passwordSalt = GenerateSalt();
             }
 
+            Mapper.PasswordFormat(user, passwordFormat);
+            Mapper.PasswordSalt(user, passwordSalt);
             Mapper.Password(user, EncodePassword(newPassword, passwordFormat, passwordSalt));
             Mapper.LastPasswordChangedDate(user, DateTime.UtcNow);
             Mapper.FailedPasswordAnswerAttemptCount(user, 0);
@@ -612,10 +707,10 @@ namespace OmidID.Web.Security {
 
         #region Create User
 
-        public override System.Web.Security.MembershipUser CreateUser(string username, string password,
-                                                                      string email, string passwordQuestion, string passwordAnswer,
-                                                                      bool isApproved, object providerUserKey,
-                                                                      out System.Web.Security.MembershipCreateStatus status) {
+        private TUser CreateNewUser(string username, string password,
+                                string email, string passwordQuestion, string passwordAnswer,
+                                bool isApproved, object providerUserKey,
+                                out System.Web.Security.MembershipCreateStatus status) {
             if (!IsValidUsername(username)) {
                 status = MembershipCreateStatus.InvalidUserName;
                 return null;
@@ -669,10 +764,11 @@ namespace OmidID.Web.Security {
                     return null;
                 }
 
-            if (Context.GetUserByEmail(email) != null) {
-                status = MembershipCreateStatus.DuplicateEmail;
-                return null;
-            }
+            if (!string.IsNullOrWhiteSpace(email))
+                if (Context.GetUserByEmail(email) != null) {
+                    status = MembershipCreateStatus.DuplicateEmail;
+                    return null;
+                }
 
             var user = Helper.New();
 
@@ -708,9 +804,21 @@ namespace OmidID.Web.Security {
             Mapper.IsAnonymous(user, false);
             Mapper.Comment(user, "");
 
+#if USE_WEBMATRIX
+            Mapper.WebMatrixPasswordValidationTokenExpireOn(user, DateTime.Now);
+#endif
+
             Context.Add(user);
 
             status = MembershipCreateStatus.Success;
+            return user;
+        }
+
+        public override System.Web.Security.MembershipUser CreateUser(string username, string password,
+                                                                      string email, string passwordQuestion, string passwordAnswer,
+                                                                      bool isApproved, object providerUserKey,
+                                                                      out System.Web.Security.MembershipCreateStatus status) {
+            var user = CreateNewUser(username, password, email, passwordQuestion, passwordAnswer, isApproved, providerUserKey, out status);
             return Mapper.To(this.Name, user);
         }
 
@@ -757,5 +865,303 @@ namespace OmidID.Web.Security {
 
         #endregion
 
+        #region WebMatrix
+
+#if USE_WEBMATRIX
+
+        public override bool ConfirmAccount(string accountConfirmationToken) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetByConfirmationCode(accountConfirmationToken);
+            if (user == null) return false;
+
+            Mapper.IsApproved(user, true);
+            Context.Update(user);
+            return true;
+        }
+
+        public override bool ConfirmAccount(string userName, string accountConfirmationToken) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetByConfirmationCode(userName, accountConfirmationToken);
+            if (user == null) return false;
+
+            Mapper.IsApproved(user, true);
+            Context.Update(user);
+            return true;
+        }
+
+        public override string CreateAccount(string userName, string password, bool requireConfirmationToken) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            if (user == null)
+                throw new MembershipCreateUserException(MembershipCreateStatus.ProviderError);
+
+            if (Mapper.WebMatrixRegistered(user))
+                throw new MembershipCreateUserException(MembershipCreateStatus.DuplicateUserName);
+
+            Mapper.WebMatrixRegistered(user, true);
+
+            string token = null;
+            if (requireConfirmationToken)
+                token = GenerateToken();
+
+            Mapper.WebMatrixConfirmationCode(user, token);
+            Mapper.IsApproved(user, !requireConfirmationToken);
+
+            Context.Update(user);
+            return token;
+        }
+
+        public override string CreateUserAndAccount(string userName, string password, bool requireConfirmation, System.Collections.Generic.IDictionary<string, object> values) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            if (user != null)
+                throw new MembershipCreateUserException(MembershipCreateStatus.DuplicateUserName);
+
+            System.Web.Security.MembershipCreateStatus status;
+            user = CreateNewUser(userName, password, null, null, null, !requireConfirmation, null, out status);
+
+            if (status != MembershipCreateStatus.Success)
+                throw new MembershipCreateUserException(status);
+
+
+            if (values != null)
+                foreach (var item in values) {
+                    Security.Mapper.UserColumnType en;
+                    if (Enum.TryParse(item.Key, out en))
+                        Mapper.Set(user, en, item.Value);
+                    else
+                        throw new System.Reflection.TargetInvocationException(new Exception(string.Format("Property '{0}' not found", item.Key)));
+                }
+
+            Mapper.WebMatrixRegistered(user, true);
+            Mapper.WebMatrixPasswordValidationTokenExpireOn(user, DateTime.Now);
+
+            string token = null;
+            if (requireConfirmation)
+                token = GenerateToken();
+
+            Mapper.WebMatrixConfirmationCode(user, token);
+            Context.Update(user);
+
+            return token;
+        }
+
+        public override bool DeleteAccount(string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            if (user == null)
+                throw new MembershipCreateUserException(MembershipCreateStatus.ProviderError);
+
+            if (!Mapper.WebMatrixRegistered(user))
+                return false;
+
+            Mapper.WebMatrixRegistered(user, false);
+            Context.Update(user);
+
+            return true;
+        }
+
+        public override string GeneratePasswordResetToken(string userName, int tokenExpirationInMinutesFromNow) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            if (user == null)
+                throw new MembershipCreateUserException(MembershipCreateStatus.InvalidUserName);
+
+            if (!Mapper.WebMatrixRegistered(user) || !Mapper.IsApproved(user))
+                throw new MembershipCreateUserException(MembershipCreateStatus.InvalidUserName);
+
+            string token = string.Empty;
+            if (Mapper.WebMatrixPasswordValidationTokenExpireOn(user) > DateTime.Now) {
+                // TODO: should we update expiry again? (Hi Matrix!)
+                token = Mapper.WebMatrixPasswordValidationToken(user);
+            } else {
+                token = GenerateToken();
+                Mapper.WebMatrixPasswordValidationToken(user, token);
+                Mapper.WebMatrixPasswordValidationTokenExpireOn(user, DateTime.Now.AddMinutes(tokenExpirationInMinutesFromNow));
+            }
+            return token;
+        }
+
+        public override System.Collections.Generic.ICollection<WebMatrix.WebData.OAuthAccountData> GetAccountsForUser(string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            if (user == null)
+                throw new MembershipCreateUserException(MembershipCreateStatus.InvalidUserName);
+
+            return Context.GetAccountsForUser(userName)
+                          .Select(s => new WebMatrix.WebData.OAuthAccountData(
+                                    Mapper_OAuth.ProviderName(s),
+                                    Mapper_OAuth.ProviderToken(s)
+                                 )).ToList();
+        }
+
+        public override DateTime GetCreateDate(string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            return Mapper.CreateOn(user);
+        }
+
+        public override DateTime GetLastPasswordFailureDate(string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            return Mapper.FailedPasswordAttemptWindowStart(user);
+        }
+
+        public override DateTime GetPasswordChangedDate(string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            return Mapper.LastPasswordChangedDate(user);
+        }
+
+        public override int GetPasswordFailuresSinceLastSuccess(string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            return Mapper.FailedPasswordAttemptCount(user);
+        }
+
+        public override int GetUserIdFromPasswordResetToken(string token) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUserByPasswordToken(token);
+            return Convert.ToInt32(Mapper.UserID(user));
+        }
+
+        public override bool IsConfirmed(string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser(userName);
+            return Mapper.IsApproved(user);
+        }
+
+        public override bool ResetPasswordWithToken(string token, string newPassword) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUserByPasswordToken(token);
+
+            var passwordFormat = Mapper.PasswordFormat(user);
+            var passwordSalt = Mapper.PasswordSalt(user);
+
+            if (PasswordFormat != passwordFormat) {
+                passwordFormat = PasswordFormat;
+                passwordSalt = GenerateSalt();
+            }
+
+            Mapper.Password(user, EncodePassword(newPassword, passwordFormat, passwordSalt));
+            Mapper.PasswordFormat(user, passwordFormat);
+            Mapper.PasswordSalt(user, passwordSalt);
+            Mapper.LastPasswordChangedDate(user, DateTime.UtcNow);
+            Mapper.FailedPasswordAnswerAttemptCount(user, 0);
+            Mapper.FailedPasswordAttemptCount(user, 0);
+
+            Context.Update(user);
+            return true;
+        }
+
+#endif
+
+        #endregion
+
+        #region WebMatrix Optional
+#if USE_WEBMATRIX
+
+        public override void CreateOrUpdateOAuthAccount(string provider, string providerUserId, string userName) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var oauth = Context.GetOAuthMembership(provider, providerUserId);
+            var user = Context.GetUser(userName);
+            if (user == null)
+                throw new ArgumentException("Cannot_Found_Member".Resource());
+
+            if (oauth != null) {
+                Mapper_OAuth.UserID(oauth, (TKey)Mapper.UserID(user));
+                Context.UpdateOAuth(oauth);
+            } else {
+                oauth = Helper_OAuth.New();
+                Mapper_OAuth.UserID(oauth, (TKey)Mapper.UserID(user));
+                Mapper_OAuth.ProviderName(oauth, provider);
+                Mapper_OAuth.ProviderToken(oauth, providerUserId);
+                Context.AddOAuth(oauth);
+            }
+
+        }
+
+        public override void DeleteOAuthAccount(string provider, string providerUserId) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var oauth = Context.GetOAuthMembership(provider, providerUserId);
+            if (oauth == null)
+                throw new ArgumentException("Cannot_Found_Member".Resource());
+
+            Context.DeleteOAuth(oauth);
+        }
+
+        public override int GetUserIdFromOAuth(string provider, string providerUserId) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var oauth = Context.GetOAuthMembership(provider, providerUserId);
+            if (oauth == null)
+                return -1;
+
+            return (int)(object)Mapper_OAuth.UserID(oauth);
+        }
+
+        public override string GetUserNameFromId(int userId) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser((TKey)(object)userId);
+            return Mapper.Username(user);
+        }
+
+        public override bool HasLocalAccount(int userId) {
+            if (!SupportWebMatrix)
+                throw new NotSupportedException("WebMatrix_NotSupported".Resource());
+
+            var user = Context.GetUser((TKey)(object)userId);
+            return Mapper.WebMatrixRegistered(user);
+        }
+
+#endif
+        #endregion
+
     }
 }
+
+
+
+
+#if TEST
+public virtual void DeleteOAuthToken(string token);
+public virtual string GeneratePasswordResetToken(string userName);
+public virtual string GetOAuthTokenSecret(string token);
+public virtual void ReplaceOAuthRequestTokenWithAccessToken(string requestToken, string accessToken, string accessTokenSecret);
+public virtual void StoreOAuthRequestToken(string requestToken, string requestTokenSecret);
+#endif

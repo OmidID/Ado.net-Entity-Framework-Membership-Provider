@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using OmidID.Web.Security.Mapper;
+using System;
 using System.ComponentModel.DataAnnotations;
-using OmidID.Web.Security.Mapper;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace OmidID.Web.Security.Default {
 
@@ -15,14 +13,22 @@ namespace OmidID.Web.Security.Default {
 
         [Key]
         [UserColumn(UserColumnType.UserID)]
-        public long UserID { get; set; }
+        public 
+#if USE_WEBMATRIX
+        int
+#else
+        long
+#endif
+        UserID { get; set; }
 
         [Required]
         [MaxLength(300)]
         [UserColumn(UserColumnType.Username)]
         public string Username { get; set; }
 
+#if !USE_WEBMATRIX
         [Required]
+#endif
         [MaxLength(300)]
         [UserColumn(UserColumnType.Email)]
         public string Email { get; set; }
@@ -110,6 +116,27 @@ namespace OmidID.Web.Security.Default {
 
         [UserColumn(UserColumnType.FailedPasswordAnswerAttemptWindowStart)]
         public DateTime FailedPasswordAnswerAttemptWindowStart { get; set; }
+
+        #endregion
+
+        #region WebMatrix
+
+#if USE_WEBMATRIX
+
+        [UserColumn(UserColumnType.Registered)]
+        public bool IsRegistered { get; set; }
+
+        [UserColumn(UserColumnType.ConfirmationCode)]
+        public string ConfirmationCode { get; set; }
+
+        [UserColumn(UserColumnType.PasswordValidationToken)]
+        public string PasswordValidationToken { get; set; }
+
+        [UserColumn(UserColumnType.PasswordValidationTokenExpireOn)]
+        public DateTime PasswordValidationTokenExpireOn { get; set; }
+
+
+#endif
 
         #endregion
 

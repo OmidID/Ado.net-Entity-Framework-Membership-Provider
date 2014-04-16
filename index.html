@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Ado.net-entity-framework-membership-provider by OmidID</title>
+    <title>Custom Entity Framework WebMatrix, Membership Provider by OmidID</title>
     <link rel="stylesheet" href="stylesheets/styles.css">
     <link rel="stylesheet" href="stylesheets/pygment_trac.css">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
@@ -31,44 +31,294 @@
 
       <section>
         <div id="title">
-          <h1>Ado.net-entity-framework-membership-provider</h1>
-          <p>EFMembership (Manage the Roles and User Accounts with Asp)</p>
+          <h1>Custom Entity Framework WebMatrix, Membership Provider</h1>
+          <p>EFMembership can Manage Roles and User Accounts over your Database and Website</p>
           <hr>
           <span class="credits left">Project maintained by <a href="https://github.com/OmidID">OmidID</a></span>
           <span class="credits right">Hosted on GitHub Pages &mdash; Theme by <a href="https://twitter.com/michigangraham">mattgraham</a></span>
         </div>
 
         <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+<a name="welcome" class="anchor" href="#welcome"><span class="octicon octicon-link"></span></a>Welcome</h3>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>EFMembership gives you Membership Provider for System.Security.Membership or WebMatrix.
+With supporting OAuthMembership for external login like (Facebook, Twitter, Yahoo, Google, ...).</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
+<p>You can use your custom model class or Builtin exist models like my Default models or Microsoft membership style</p>
+
+<h3>
+<a name="install" class="anchor" href="#install"><span class="octicon octicon-link"></span></a>Install</h3>
+
+<p>Use nuget packge manager to add EFMembership and dependency references to your project </p>
+
+<blockquote>
+<p>For WebMatrix:</p>
+
+<pre><code>PM&gt; Install-Package EFMembership-WebMatrix
 </code></pre>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<p>For Default Membership Provider:</p>
+
+<pre><code>PM&gt; Install-Package EFMembership
+</code></pre>
+</blockquote>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a name="quick-start" class="anchor" href="#quick-start"><span class="octicon octicon-link"></span></a>Quick Start</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<ul>
+<li><strong>To use Default Model:</strong></li>
+</ul><div class="highlight highlight-cs"><pre>    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyMembership</span> <span class="p">:</span>
+        <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">EFMembershipProvider</span><span class="p">&lt;</span>
+            <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Default</span><span class="p">.</span><span class="n">DefaultUser</span><span class="p">,</span>
+            <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Default</span><span class="p">.</span><span class="n">DefaultOAuthMembership</span><span class="p">,</span>
+            <span class="kt">int</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyRole</span> <span class="p">:</span>
+        <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">EFRoleProvider</span><span class="p">&lt;</span>
+            <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Default</span><span class="p">.</span><span class="n">DefaultRole</span><span class="p">,</span>
+            <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Default</span><span class="p">.</span><span class="n">DefaultUserRole</span><span class="p">,</span>
+            <span class="kt">int</span><span class="p">&gt;</span> <span class="p">{</span>
+    <span class="p">}</span>
+</pre></div>
+
+<ul>
+<li><strong>Do you want to use you Membership Model?</strong></li>
+</ul><blockquote>
+<p>Username, UserID, Password, PasswordFormat, PasswordSalt in User Table are required and<br>
+UserID, ProviderName, ProviderToken in OAuthMembership Table are required.</p>
+</blockquote>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.ComponentModel.DataAnnotations</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">OmidID.Web.Security.Mapper</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MyApp</span> <span class="p">{</span>
+<span class="na">    [Table("Users")]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyUser</span> <span class="p">{</span> 
+
+        <span class="c1">//If you want to use different name for your model</span>
+<span class="na">        [UserColumn(UserColumnType.UserID)]</span>
+<span class="na">        [Key]</span>
+        <span class="k">public</span> <span class="kt">long</span> <span class="n">ID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [Required]</span>
+<span class="na">        [MaxLength(300)]</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Username</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [Required]</span>
+<span class="na">        [MaxLength(100)]</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Password</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [Required]</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">PasswordFormat</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [MaxLength(100)]</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">PasswordSalt</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [UserColumn(UserColumnType.Email)]</span>
+<span class="na">        [MaxLength(100)]</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">EmailAddress</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+        <span class="k">public</span> <span class="kt">bool</span> <span class="n">IsApproved</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [UserColumn(UserColumnType.Email)]</span>
+        <span class="k">public</span> <span class="n">DateTime</span> <span class="n">CreateOn</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+
+</pre></div>
+
+<p><br></p>
+
+<blockquote>
+<p>If you are using WebMatrix:</p>
+</blockquote>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.ComponentModel.DataAnnotations</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">OmidID.Web.Security.Mapper</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MyApp</span> <span class="p">{</span>
+<span class="na">    [Table("OAuthMemberships")]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyOAuthMembership</span> <span class="p">{</span> 
+
+<span class="na">        [Key]</span>
+        <span class="k">public</span> <span class="kt">long</span> <span class="n">UserID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [Required]</span>
+<span class="na">        [MaxLength(400)]</span>
+<span class="na">        [OAuthMembership(OAuthMembershipColumnType.ProviderName)]</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Name</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [Required]</span>
+<span class="na">        [MaxLength(400)]</span>
+<span class="na">        [OAuthMembership(OAuthMembershipColumnType.ProviderToken)]</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">Token</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><br></p>
+
+<blockquote>
+<p><strong>If you don't want to have Role in your website, you can skip this step</strong><br>
+OK. Now we have to create Role and UserRole (to make n to n relation between User and Role )</p>
+</blockquote>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.ComponentModel.DataAnnotations</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">OmidID.Web.Security.Mapper</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MyApp</span> <span class="p">{</span>   
+<span class="na">    [Table("Roles")]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyRole</span> <span class="p">{</span>
+
+<span class="na">        [Key]</span>
+<span class="na">        [RoleColumn(RoleColumnType.RoleID)]</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">RoleID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [Required]</span>
+<span class="na">        [RoleColumn(RoleColumnType.RoleName)]</span>
+        <span class="k">public</span> <span class="kt">string</span> <span class="n">RoleName</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [Required]</span>
+<span class="na">        [RoleColumn(RoleColumnType.CreateOn)]</span>
+        <span class="k">public</span> <span class="n">DateTime</span> <span class="n">CreateOn</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="p">}</span>
+
+<span class="p">}</span>
+</pre></div>
+
+<p><br></p>
+
+<div class="highlight highlight-cs"><pre><span class="k">using</span> <span class="nn">System</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">System.ComponentModel.DataAnnotations</span><span class="p">;</span>
+<span class="k">using</span> <span class="nn">OmidID.Web.Security.Mapper</span><span class="p">;</span>
+
+<span class="k">namespace</span> <span class="nn">MyApp</span> <span class="p">{</span>   
+<span class="na">    [Table("UserRoles")]</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyUserRole</span> <span class="p">{</span>
+
+<span class="na">        [Key]</span>
+<span class="na">        [Column(Order = 1)]</span>
+<span class="na">        [UserRoleColumn(UserRoleColumnType.RoleID)]</span>
+        <span class="k">public</span> <span class="kt">int</span> <span class="n">RoleID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [ForeignKey("RoleID")]</span>
+        <span class="k">public</span> <span class="n">MyRole</span> <span class="n">Role</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+
+<span class="na">        [Key]</span>
+<span class="na">        [Column(Order = 2)]</span>
+<span class="na">        [UserRoleColumn(UserRoleColumnType.UserID)]</span>
+        <span class="k">public</span> <span class="kt">long</span> <span class="n">UserID</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+<span class="na">        [ForeignKey("UserID")]</span>
+        <span class="k">public</span> <span class="n">MyUser</span> <span class="n">User</span> <span class="p">{</span> <span class="k">get</span><span class="p">;</span> <span class="k">set</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><br></p>
+
+<blockquote>
+<p>Now you can make your custom Membership:</p>
+</blockquote>
+
+<div class="highlight highlight-cs"><pre><span class="k">namespace</span> <span class="nn">MyApp</span> <span class="p">{</span>
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyMembership</span> <span class="p">:</span>
+        <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">EFMembershipProvider</span><span class="p">&lt;</span><span class="n">MyUser</span><span class="p">,</span> <span class="n">MyOAuthMembership</span><span class="p">,</span> <span class="kt">int</span><span class="p">&gt;</span> 
+    <span class="p">{</span>
+    <span class="p">}</span>
+
+    <span class="k">public</span> <span class="k">class</span> <span class="nc">MyRole</span> <span class="p">:</span>
+        <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">EFRoleProvider</span><span class="p">&lt;</span><span class="n">MyRole</span><span class="p">,</span> <span class="n">MyUserRole</span><span class="p">,</span> <span class="kt">int</span><span class="p">&gt;</span> 
+    <span class="p">{</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+
+<p><br></p>
+
+<blockquote>
+<p><strong>Congratulation! Now you have your Custom Membership Provider</strong>
+<br></p>
+</blockquote>
 
 <h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<a name="add-custom-membership-to-your-webconfig-or-appconfig-file" class="anchor" href="#add-custom-membership-to-your-webconfig-or-appconfig-file"><span class="octicon octicon-link"></span></a>Add Custom membership to your web.config or app.config file</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>just open your config file and merge or add those section below to your config file:</p>
+
+<div class="highlight highlight-xml"><pre><span class="nt">&lt;configuration&gt;</span>
+  <span class="nt">&lt;connectionStrings&gt;</span>
+    <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">"DefaultConnection"</span> <span class="na">connectionString=</span><span class="s">"Data Source=(LocalDb)\v11.0;Initial Catalog=aspnet-WebMatrix_Sample1-20140412113758;Integrated Security=SSPI;AttachDBFilename=|DataDirectory|\aspnet-WebMatrix_Sample1-20140412113758.mdf"</span> <span class="na">providerName=</span><span class="s">"System.Data.SqlClient"</span> <span class="nt">/&gt;</span>
+  <span class="nt">&lt;/connectionStrings&gt;</span>
+
+  <span class="nt">&lt;system.web&gt;</span>
+    <span class="nt">&lt;membership</span> <span class="na">defaultProvider=</span><span class="s">"MyCustomMembershipProvider"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;providers&gt;</span>
+        <span class="nt">&lt;clear</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">"MyCustomMembershipProvider"</span>
+             <span class="na">type=</span><span class="s">"MyApp.MyMembership, MyApp"</span>
+             <span class="na">tablePrefix=</span><span class="s">"membership_"</span>
+             <span class="na">connectionStringName=</span><span class="s">"DefaultConnection"</span>
+             <span class="na">enablePasswordRetrieval=</span><span class="s">"false"</span>
+             <span class="na">enablePasswordReset=</span><span class="s">"true"</span>
+             <span class="na">requiresQuestionAndAnswer=</span><span class="s">"false"</span>
+             <span class="na">requiresUniqueEmail=</span><span class="s">"false"</span>
+             <span class="na">maxInvalidPasswordAttempts=</span><span class="s">"5"</span>
+             <span class="na">minRequiredPasswordLength=</span><span class="s">"6"</span>
+             <span class="na">minRequiredNonalphanumericCharacters=</span><span class="s">"0"</span>
+             <span class="na">requiresEmail=</span><span class="s">"false"</span>
+             <span class="na">passwordAttemptWindow=</span><span class="s">"10"</span>
+             <span class="na">applicationName=</span><span class="s">"/"</span><span class="nt">&gt;&lt;/add&gt;</span>
+      <span class="nt">&lt;/providers&gt;</span>
+    <span class="nt">&lt;/membership&gt;</span>
+
+
+    <span class="nt">&lt;roleManager</span> <span class="na">enabled=</span><span class="s">"true"</span> <span class="na">defaultProvider=</span><span class="s">"MyCustomRoleProvider"</span><span class="nt">&gt;</span>
+      <span class="nt">&lt;providers&gt;</span>
+        <span class="nt">&lt;clear</span> <span class="nt">/&gt;</span>
+        <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">"MyCustomRoleProvider"</span>
+             <span class="na">membershipProvider=</span><span class="s">"MyCustomMembershipProvider"</span>
+             <span class="na">type=</span><span class="s">"MyApp.MyRole, MyApp"</span>
+             <span class="na">tablePrefix=</span><span class="s">"tbl_webmatrix_"</span>
+             <span class="na">connectionStringName=</span><span class="s">"DefaultConnection"</span>
+             <span class="na">applicationName=</span><span class="s">"/"</span> <span class="nt">/&gt;</span>
+      <span class="nt">&lt;/providers&gt;</span>
+    <span class="nt">&lt;/roleManager&gt;</span>
+
+  <span class="nt">&lt;/system.web&gt;</span>
+<span class="nt">&lt;/configuration&gt;</span>
+</pre></div>
 
 <h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a name="initalize-database-automaticly" class="anchor" href="#initalize-database-automaticly"><span class="octicon octicon-link"></span></a>Initalize Database Automaticly</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>If you want to generate your database automaticly you can run the code below in your Application Start:</p>
+
+<div class="highlight highlight-cs"><pre><span class="kt">var</span> <span class="n">membership</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Membership</span><span class="p">.</span><span class="n">Provider</span><span class="p">;</span>
+<span class="kt">var</span> <span class="n">role</span> <span class="p">=</span> <span class="n">System</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Roles</span><span class="p">.</span><span class="n">Provider</span><span class="p">;</span>
+<span class="kt">var</span> <span class="n">installer</span> <span class="p">=</span> <span class="k">new</span> <span class="n">OmidID</span><span class="p">.</span><span class="n">Web</span><span class="p">.</span><span class="n">Security</span><span class="p">.</span><span class="n">Installer</span><span class="p">();</span>
+
+<span class="n">installer</span><span class="p">.</span><span class="n">MembershipProvider</span> <span class="p">=</span> <span class="n">membership</span><span class="p">;</span>
+<span class="n">installer</span><span class="p">.</span><span class="n">RoleProvider</span> <span class="p">=</span> <span class="n">role</span><span class="p">;</span>
+
+<span class="c1">//Install database:</span>
+<span class="kt">bool</span> <span class="n">Created</span> <span class="p">=</span> <span class="n">installer</span><span class="p">.</span><span class="n">CreateIfNotExist</span><span class="p">();</span>
+</pre></div>
 
 <h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a name="test-and-example" class="anchor" href="#test-and-example"><span class="octicon octicon-link"></span></a>Test and Example</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>You can download full source code from Github and run my Samples to see speed of Register and Authorize users</p>
       </section>
 
     </div>

@@ -21,7 +21,7 @@ namespace WebMatrix_Sample1 {
             installer.RoleProvider = role;
 
             //Install database:
-            installer.CreateIfNotExist();
+            bool Created = installer.CreateIfNotExist();
 
             AreaRegistration.RegisterAllAreas();
 

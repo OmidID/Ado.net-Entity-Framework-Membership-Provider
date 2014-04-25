@@ -45,6 +45,8 @@
 <p>EFMembership gives you Membership Provider for System.Security.Membership or WebMatrix.
 With supporting OAuthMembership for external login like (Facebook, Twitter, Yahoo, Google, ...).</p>
 
+<p><img src="http://omidid.github.io/Ado.net-Entity-Framework-Membership-Provider/files/how-to.png" alt="EFMembership - WebMatrix , Membership Provider"></p>
+
 <p>You can use your custom model class or Builtin exist models like my Default models or Microsoft membership style</p>
 
 <h3>
@@ -290,7 +292,7 @@ OK. Now we have to create Role and UserRole (to make n to n relation between Use
         <span class="nt">&lt;add</span> <span class="na">name=</span><span class="s">"MyCustomRoleProvider"</span>
              <span class="na">membershipProvider=</span><span class="s">"MyCustomMembershipProvider"</span>
              <span class="na">type=</span><span class="s">"MyApp.MyRole, MyApp"</span>
-             <span class="na">tablePrefix=</span><span class="s">"tbl_webmatrix_"</span>
+             <span class="na">tablePrefix=</span><span class="s">"membership_"</span>
              <span class="na">connectionStringName=</span><span class="s">"DefaultConnection"</span>
              <span class="na">applicationName=</span><span class="s">"/"</span> <span class="nt">/&gt;</span>
       <span class="nt">&lt;/providers&gt;</span>

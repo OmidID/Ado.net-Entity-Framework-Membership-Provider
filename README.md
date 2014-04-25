@@ -2,6 +2,8 @@
 EFMembership gives you Membership Provider for System.Security.Membership or WebMatrix.
 With supporting OAuthMembership for external login like (Facebook, Twitter, Yahoo, Google, ...).
 
+![EFMembership - WebMatrix , Membership Provider](http://omidid.github.io/Ado.net-Entity-Framework-Membership-Provider/files/how-to.png)
+
 You can use your custom model class or Builtin exist models like my Default models or Microsoft membership style
 
 ### Install

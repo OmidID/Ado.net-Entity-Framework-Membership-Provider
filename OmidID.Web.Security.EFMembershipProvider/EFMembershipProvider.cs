@@ -462,7 +462,7 @@ DataContext.IUserContext<TUser, TKey>
             if (Mapper.IsLockedOut(User)) return false;
 
             var Hashed = EncodePassword(Answer.ToLower(), Format, Salt);
-            if (Hashed.Equals(Mapper.Get<string>(User, Security.Mapper.UserColumnType.Password), StringComparison.OrdinalIgnoreCase)) {
+            if (Hashed.Equals(Mapper.Get<string>(User, Security.Mapper.UserColumnType.PasswordAnswer), StringComparison.OrdinalIgnoreCase)) {
                 if (SupportAutoLockUser && LockIsPossible) {
                     Mapper.FailedPasswordAnswerAttemptCount(User, 0);
                     Mapper.FailedPasswordAnswerAttemptWindowStart(User, new DateTime(1800, 1, 1));
